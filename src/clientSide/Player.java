@@ -1,3 +1,5 @@
+package clientSide;
+
 public class Player {
 
     private static int playerIDGenerator;
