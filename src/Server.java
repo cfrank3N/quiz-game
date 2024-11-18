@@ -37,7 +37,7 @@ public class Server {
                     System.out.println("client disconnected");
 
                 } catch (IOException e) {
-                    System.err.println("Error handlining client connection" + e.getMessage());;
+                    System.err.println("Error handling client connection" + e.getMessage());;
                 }
         }
 
