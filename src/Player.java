@@ -2,7 +2,7 @@ public class Player {
 
     private static int playerIDGenerator;
     private final int playerID = playerIDGenerator;
-    private int score;
+    private int points;
     private final String playerName;
 
     public enum PlayerOrder {PLAYER_ONE, PLAYER_TWO}
@@ -14,16 +14,16 @@ public class Player {
         playerIDGenerator++;
     }
 
-    public int getScore() {
-        return score;
+    public int getPoints() {
+        return points;
     }
 
     public int getPlayerID() {
         return playerID;
     }
 
-    public void addScoreToPlayer(int scoreToAdd) {
-        this.score += scoreToAdd;
+    public void addPoints(int pointsToAdd) {
+        this.points += pointsToAdd;
     }
 
     public String getPlayerName() {
