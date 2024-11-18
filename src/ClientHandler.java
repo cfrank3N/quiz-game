@@ -2,8 +2,8 @@ import java.io.*;
 import java.net.Socket;
 
 public class ClientHandler implements Runnable {
-    private Socket socket;
-    private String clientInfo;
+    private final Socket socket;
+    private final String clientInfo;
 
     public ClientHandler(Socket socket) {
         this.socket = socket;

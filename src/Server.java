@@ -6,6 +6,7 @@ public class Server {
 
     public Server () {
         int port = 1234;
+        boolean bothPlayersConnected = false;
 
         try (ServerSocket serverSock = new ServerSocket(port)) {
             System.out.println("Server started; port " + port);
