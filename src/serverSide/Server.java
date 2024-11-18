@@ -1,4 +1,4 @@
-import serverSide.ClientHandler;
+package serverSide;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -11,7 +11,7 @@ public class Server {
         boolean bothPlayersConnected = false;
 
         try (ServerSocket serverSock = new ServerSocket(port)) {
-            System.out.println("Server started; port " + port);
+            System.out.println("serverSide.Server started; port " + port);
 
             while (true) {
                 Socket p1sock = serverSock.accept();
@@ -42,6 +42,6 @@ public class Server {
     }
 
     public static void main(String[] args) {
-       new Server();
+       new serverSide.Server();
     }
 }
