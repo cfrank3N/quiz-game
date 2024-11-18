@@ -3,9 +3,12 @@ import java.net.Socket;
 
 public class ClientHandler implements Runnable {
     private Socket socket;
+    private String clientInfo;
 
     public ClientHandler(Socket socket) {
         this.socket = socket;
+        this.clientInfo = socket.getInetAddress().getHostAddress() + ":" +socket.getPort();
+
     }
 
     public void run() {
@@ -22,7 +25,7 @@ public class ClientHandler implements Runnable {
 
             String messageFromClient;
             while ((messageFromClient = bufferedReader.readLine()) != null) {
-                System.out.println("client: " + messageFromClient);
+                System.out.println("client: " +clientInfo +" " +messageFromClient);
 
                 if (messageFromClient.equalsIgnoreCase("EXIT")) {
                     bufferedWriter.write("server: Goodbye.");
