@@ -1,5 +1,7 @@
 package serverSide;
 
+import questions.Question;
+
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -7,7 +9,7 @@ import java.net.Socket;
 public class Server {
 
     public Server () {
-        int port = 1234;
+        int port = 55555;
         boolean bothPlayersConnected = false;
 
         try (ServerSocket serverSock = new ServerSocket(port)) {
@@ -33,10 +35,20 @@ public class Server {
                 p1Thread.start();
                 Thread.sleep(100);
                 p2Thread.start();
+
+                Object fromClient1;
+                Object fromClient2;
+
+                while ((fromClient1 = p1In.readObject()) != null && (fromClient2 = p2In.readObject()) != null) {
+                    p1Out.writeObject(new Question("Jag heter Adam", "Ja heter Alex", "Jag heter Ante", "Jag heter Abbe"));
+                    p2Out.writeObject(new Question("Jag heter Adam", "Ja heter Alex", "Jag heter Ante", "Jag heter Abbe"));
+                }
             }
         } catch (IOException e) {
             System.err.println("Problem with server" + e.getMessage());
         } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
     }

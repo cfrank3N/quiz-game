@@ -1,3 +1,5 @@
+package questions;
+
 public enum ESubject {
 SUBJECT1,
 SUBJECT2,
