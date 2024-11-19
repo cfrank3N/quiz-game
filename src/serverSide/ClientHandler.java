@@ -22,7 +22,7 @@ public class ClientHandler implements Runnable {
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             BufferedWriter out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()))
         ) {
-            out.write("Enter password: \n");
+            out.write("Enter password och test: \n");
             out.newLine();
             out.flush();
 
