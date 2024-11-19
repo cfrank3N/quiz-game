@@ -1,12 +1,10 @@
 import java.io.*;
-import java.net.InetAddress;
 import java.net.Socket;
-import java.net.UnknownHostException;
 
 public class Client {
-    public static void main(String[] args) throws UnknownHostException {
-        String serverAdress = InetAddress.getLocalHost().getHostAddress();
-        int port = 1234;
+    public static void main(String[] args) {
+        String serverAdress = "192.168.1.35";
+        int port = 50001;
 
         try (
             Socket socket = new Socket(serverAdress, port);
