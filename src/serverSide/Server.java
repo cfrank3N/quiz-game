@@ -15,7 +15,7 @@ public class Server {
 
             while (true) {
                 Socket p1sock = serverSock.accept();
-                System.out.println("Player1 connected" + p1sock.getRemoteSocketAddress());
+                System.out.println("gitPlayer1 connected" + p1sock.getRemoteSocketAddress());
                 Socket p2sock = serverSock.accept();
                 System.out.println("Player2 connected" + p2sock.getRemoteSocketAddress());
 
