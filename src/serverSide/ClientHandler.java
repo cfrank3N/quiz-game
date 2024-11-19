@@ -2,7 +2,6 @@ package serverSide;
 
 import java.io.*;
 import java.net.Socket;
-import java.util.List;
 
 public class ClientHandler implements Runnable {
     private final Socket socket;
@@ -47,10 +46,6 @@ public class ClientHandler implements Runnable {
                     out.flush();
                     break;
                 }
-
-                out.write("received" + messageFromClient);
-                out.newLine();
-                out.flush();
             }
 
             System.out.println("client disconnected");
