@@ -12,7 +12,10 @@ public class Server {
        new Server().startServer();
     }
     public void startServer () {
-        new Thread(this::startMulticastBroadcaster).start();
+
+        String serverInfo = getLocalIPAddress() + ":" + PORT;
+        Thread multicastThread = new Thread(new MulticastBroadcaster(MULTICAST_GROUP, MULTICAST_PORT, serverInfo));
+        multicastThread.start();
 
         try (ServerSocket serverSock = new ServerSocket(PORT)) {
             System.out.println("Server started: port " + PORT);
@@ -30,20 +33,11 @@ public class Server {
         }
     }
 
-    private void startMulticastBroadcaster() {
-        try(DatagramSocket socket = new DatagramSocket()) {
-            InetAddress group = InetAddress.getByName(MULTICAST_GROUP);
-            String message = InetAddress.getLocalHost().getHostAddress() + ":" + PORT;
-
-            while (true) {
-                byte[] buffer = message.getBytes();
-                DatagramPacket packet = new DatagramPacket(buffer, buffer.length, group, MULTICAST_PORT);
-                socket.send(packet);
-                    System.out.println("Sending server info: " +message);
-                    Thread.sleep(2000);
-            }
-    } catch (Exception e) {
-            System.err.println("Problem with server: " + e.getMessage());
+    private String getLocalIPAddress() {
+        try {
+            return InetAddress.getLocalHost().getHostAddress();
+        } catch (UnknownHostException e) {
+            throw new RuntimeException("Failed to get local IP address" +e.getMessage());
         }
-}
+    }
 }

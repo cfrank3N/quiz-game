@@ -1,23 +1,31 @@
+import clientSide.MulticastDiscovery;
+
 import java.io.*;
 import java.net.*;
 
 public class Client {
     public static void main(String[] args) {
+
+        final String MULTICAST_GROUP = "230.0.0.0";
+        final int PORT = 50000;
+
         try {
-            // Discover server dynamically
-            String serverInfo = discoverServer();
+            MulticastDiscovery discovery = new MulticastDiscovery(MULTICAST_GROUP, PORT);
+            String serverInfo = discovery.discoverServer();
+
             String[] parts = serverInfo.split(":");
             String serverAddress = parts[0];
-            int port = Integer.parseInt(parts[1]);
+            int serverPort = Integer.parseInt(parts[1]);
+
 
             // Connect to the discovered server
             try (
-                Socket socket = new Socket(serverAddress, port);
+                Socket socket = new Socket(serverAddress, serverPort);
                 BufferedReader serverIn = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 BufferedWriter serverOut = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
                 BufferedReader userIn = new BufferedReader(new InputStreamReader(System.in))
             ) {
-                System.out.println("Connected to server: " + serverAddress + " port: " + port);
+                System.out.println("Connected to server: " + serverAddress + " port: " + serverPort);
 
                 // Read password prompt from server
                 String serverMessage = serverIn.readLine();
@@ -68,25 +76,6 @@ public class Client {
             }
         } catch (IOException e) {
             System.err.println("Error: " + e.getMessage());
-        }
-    }
-
-    private static String discoverServer() throws IOException {
-        final String MULTICAST_GROUP = "230.0.0.0";
-        final int MULTICAST_PORT = 50000;
-
-        try (MulticastSocket socket = new MulticastSocket(MULTICAST_PORT)) {
-            socket.joinGroup(InetAddress.getByName(MULTICAST_GROUP));
-            System.out.println("Listening for server broadcasts...");
-
-            byte[] buffer = new byte[256];
-            DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
-
-            socket.receive(packet);
-            String serverInfo = new String(packet.getData(), 0, packet.getLength());
-            System.out.println("Discovered server: " + serverInfo);
-
-            return serverInfo;
         }
     }
 }
