@@ -3,45 +3,31 @@ package serverSide;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Server {
+    private final int PORT = 1234;
 
-    public Server () {
-        int port = 1234;
-        boolean bothPlayersConnected = false;
-
-        try (ServerSocket serverSock = new ServerSocket(port)) {
-            System.out.println("serverSide.Server started; port " + port);
+    public static void main(String[] args) {
+       new Server().startServer();
+    }
+    public void startServer () {
+        try (ServerSocket serverSock = new ServerSocket(PORT)) {
+            System.out.println("Server started: port " + PORT);
 
             while (true) {
-                Socket p1sock = serverSock.accept();
-                System.out.println("gitPlayer1 connected" + p1sock.getRemoteSocketAddress());
-                Socket p2sock = serverSock.accept();
-                System.out.println("Player2 connected" + p2sock.getRemoteSocketAddress());
+                Socket clientSocket = serverSock.accept();
+                System.out.println("Client connected: " + clientSocket.getRemoteSocketAddress());
 
-                ObjectOutputStream p1Out = new ObjectOutputStream(p1sock.getOutputStream());
-                ObjectInputStream p1In = new ObjectInputStream(p2sock.getInputStream());
-                ClientHandler p1Handler = new ClientHandler(p1sock);
-
-                ObjectOutputStream p2Out = new ObjectOutputStream(p2sock.getOutputStream());
-                ObjectInputStream p2In = new ObjectInputStream(p2sock.getInputStream());
-                ClientHandler p2Handler = new ClientHandler(p2sock);
-
-                Thread p1Thread = new Thread(p1Handler);
-                Thread p2Thread = new Thread(p2Handler);
-
-                p1Thread.start();
-                Thread.sleep(100);
-                p2Thread.start();
+                ClientHandler clientHandler = new ClientHandler(clientSocket);
+                Thread clientThread = new Thread(clientHandler);
+                clientThread.start();
             }
         } catch (IOException e) {
             System.err.println("Problem with server" + e.getMessage());
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
         }
-    }
-
-    public static void main(String[] args) {
-       new serverSide.Server();
     }
 }
