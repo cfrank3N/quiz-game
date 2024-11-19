@@ -25,7 +25,7 @@ public class MulticastDiscovery {
 
             socket.receive(packet);
             String serverInfo = new String(packet.getData(), 0, packet.getLength());
-            System.out.println("Discovered server" +serverInfo);
+            System.out.println("Discovered server: " +serverInfo);
 
             return serverInfo;
         } catch (IOException e) {

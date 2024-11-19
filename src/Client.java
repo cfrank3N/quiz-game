@@ -25,14 +25,14 @@ public class Client {
                 BufferedWriter serverOut = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
                 BufferedReader userIn = new BufferedReader(new InputStreamReader(System.in))
             ) {
-                System.out.println("Connected to server: " + serverAddress + " port: " + serverPort);
+//                System.out.println("Connected to server: " + serverAddress + " port: " + serverPort);
 
                 // Read password prompt from server
                 String serverMessage = serverIn.readLine();
                 System.out.println("Server: " + serverMessage);
 
                 // Send password
-                System.out.print("Enter password: ");
+//                System.out.print("Enter password: ");
                 String password = userIn.readLine();
                 serverOut.write(password);
                 serverOut.newLine();
@@ -40,7 +40,7 @@ public class Client {
 
                 // Check server response
                 serverMessage = serverIn.readLine();
-                System.out.println("Server: " + serverMessage);
+//                System.out.println("Server: " + serverMessage);
 
                 // Disconnect if password is incorrect
                 if (serverMessage.startsWith("Wrong password")) {

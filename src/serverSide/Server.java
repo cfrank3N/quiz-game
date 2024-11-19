@@ -12,7 +12,6 @@ public class Server {
        new Server().startServer();
     }
     public void startServer () {
-
         String serverInfo = getLocalIPAddress() + ":" + PORT;
         Thread multicastThread = new Thread(new MulticastBroadcaster(MULTICAST_GROUP, MULTICAST_PORT, serverInfo));
         multicastThread.start();
@@ -22,14 +21,49 @@ public class Server {
 
             while (true) {
                 Socket clientSocket = serverSock.accept();
+
+                BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+                BufferedWriter out = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
+
+                boolean isAuthenticated = authenticateClient(clientSocket, in, out);
+
+                if (!isAuthenticated) {
+                    clientSocket.close();
+                    continue;
+                }
                 System.out.println("Client connected: " + clientSocket.getRemoteSocketAddress());
 
-                ClientHandler clientHandler = new ClientHandler(clientSocket);
+                ClientHandler clientHandler = new ClientHandler(clientSocket, in, out);
                 Thread clientThread = new Thread(clientHandler);
                 clientThread.start();
             }
         } catch (IOException e) {
             System.err.println("Problem with server: " + e.getMessage());
+        }
+    }
+
+    private boolean authenticateClient(Socket clientSocket, BufferedReader in, BufferedWriter out) {
+        try{
+            out.write("Enter password:\n");
+            out.newLine();
+            out.flush();
+
+            String enteredPassword = in.readLine();
+            if (!"hejsan123".equals(enteredPassword)) {
+                out.write("Wrong password. Disconnecting.");
+                out.newLine();
+                out.flush();
+                System.out.println("Invalid password attempted" + clientSocket.getRemoteSocketAddress());
+                return false;
+            }
+
+            out.write("Correct password. Welcome to the server!");
+            out.newLine();
+            out.flush();
+            return true;
+        } catch (IOException e) {
+            System.err.println("Problem with server: " + e.getMessage());
+            return false;
         }
     }
 
