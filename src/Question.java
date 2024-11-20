@@ -1,40 +1,41 @@
+import serverSide.Answer;
+
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 public class Question {
-    ArrayList<String> subjectQuestions = new ArrayList<>();
-    private String correctAnswer;
+    private String questionText;
+    private List<Answer> answers = new ArrayList<>();
 
-    public Question(String q1, String q2, String q3, String correctAnswer) {
+    public Question(String questionText, Answer... answers) {
+        this.questionText = questionText;
+        Collections.addAll(this.answers, answers);
+        Collections.shuffle(this.answers);
+    }
 
-        subjectQuestions.add(q1);
-        subjectQuestions.add(q2);
-        subjectQuestions.add(q3);
-        subjectQuestions.add(correctAnswer);
-        this.correctAnswer = correctAnswer;
-        Collections.shuffle(subjectQuestions);
+    public String getQuestionText() {
+        return questionText;
+    }
 
+    public List<Answer> getAnswers() {
+        return answers;
+    }
 
+    public boolean isCorrectAnswer(int index) {
+        if (index >= 0 && index < answers.size()) {
+            return answers.get(index).isCorrect();
+        }
+        return false;
     }
 
     public String displayQuestion() {
-        StringBuilder sb = new StringBuilder()
+        StringBuilder sb = new StringBuilder();
+        sb.append(questionText).append("\n");
+        for (int i = 0; < answers.size(); i++) {
+            sb.append((i+1)).append(". ").append(answers.get(i).getText()).append("\n");
+        }
+        return sb.toString();
     }
-
-
-    public boolean ifAnswerIsCorrect(String playerAnswer) {
-
-        return playerAnswer.equalsIgnoreCase(getCorrectAnswer());
-    }
-
-
-    public String getCorrectAnswer() {
-        return correctAnswer;
-    }
-
-    public void setCorrectAnswer(String correctAnswer) {
-        this.correctAnswer = correctAnswer;
-    }
-
-
 }
+
