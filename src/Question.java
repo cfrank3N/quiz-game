@@ -32,7 +32,7 @@ public class Question {
     public String displayQuestion() {
         StringBuilder sb = new StringBuilder();
         sb.append(questionText).append("\n");
-        for (int i = 0; < answers.size(); i++) {
+        for (int i = 0; i < answers.size(); i++) {
             sb.append((i+1)).append(". ").append(answers.get(i).getText()).append("\n");
         }
         return sb.toString();
