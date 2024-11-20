@@ -37,6 +37,7 @@ public class Server {
                 ClientHandler clientHandler = new ClientHandler(clientSocket, in, out);
                 Thread clientThread = new Thread(clientHandler);
                 clientThread.start();
+
             }
         } catch (IOException e) {
             System.err.println("Problem with server: " + e.getMessage());

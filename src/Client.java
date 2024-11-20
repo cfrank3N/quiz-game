@@ -48,7 +48,7 @@ public class Client {
                 }
 
                 // Start thread to read server messages
-                Thread readerThread = new Thread(() -> {
+//                Thread readerThread = new Thread(() -> {
                     try {
                         String response;
                         while ((response = serverIn.readLine()) != null) {
@@ -57,8 +57,9 @@ public class Client {
                     } catch (IOException e) {
                         System.err.println("Connection to server lost: " + e.getMessage());
                     }
-                });
-                readerThread.start();
+//                }
+//                );
+//                readerThread.start();
 
                 // Send user messages to server
                 String userMessage;
