@@ -1,3 +1,5 @@
+package serverSide;
+
 public enum ESubject {
 SUBJECT1,
 SUBJECT2,

@@ -1,7 +1,10 @@
+package serverSide;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class Question {
+public class Question implements Serializable {
     ArrayList<String> subjectQuestions = new ArrayList<>();
     private String correctAnswer;
 
@@ -43,8 +46,8 @@ public class Question {
     }
     /*
 
-public ESubject getSubject(){
-        return  ESubject.SUBJECT1;
+public serverSide.ESubject getSubject(){
+        return  serverSide.ESubject.SUBJECT1;
 }
 
      */
