@@ -3,8 +3,8 @@ import java.net.Socket;
 
 public class Client {
     public static void main(String[] args) {
-        String serverAdress = "localhost";
-        int port = 55555;
+        String serverAdress = "192.168.1.35";
+        int port = 50001;
 
         try (
             Socket socket = new Socket(serverAdress, port);
@@ -19,27 +19,8 @@ public class Client {
                 System.out.println("Server: " + serverMessage);
             }
 
-            String password = userIn.readLine();
-            serverOut.write(password);
-            serverOut.newLine();
-            serverOut.flush();
-
-            Thread readerThread = new Thread(() -> {
-                String response;
-                try {
-                    while ((response = serverIn.readLine()) != null) {
-                        System.out.println("Server: " +response);
-                    }
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            });
-
-            readerThread.start();
-
-
             String userMessage;
-            while ((userMessage = serverIn.readLine()) != null) {
+            while ((userMessage = userIn.readLine()) != null) {
                 serverOut.write(userMessage);
                 serverOut.newLine();
                 serverOut.flush();
