@@ -6,13 +6,10 @@ import java.net.Socket;
 public class ClientHandler implements Runnable {
     private final Socket socket;
     private final String clientInfo;
-    private final String password = "hejsan123";
-
 
     public ClientHandler(Socket socket) {
         this.socket = socket;
         this.clientInfo = socket.getInetAddress().getHostAddress() + ":" +socket.getPort();
-
     }
 
     @Override
@@ -21,19 +18,7 @@ public class ClientHandler implements Runnable {
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             BufferedWriter out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()))
         ) {
-            out.write("Enter password och test: \n");
-            out.newLine();
-            out.flush();
-
-            String enteredPassword = in.readLine();
-            if (!password.equals(enteredPassword)) {
-                out.write("Wrong password\n");
-                out.newLine();
-                out.flush();
-                return;
-            }
-
-            out.write("Correct password, connected to server");
+            out.write("Hello!");
             out.newLine();
             out.flush();
 
