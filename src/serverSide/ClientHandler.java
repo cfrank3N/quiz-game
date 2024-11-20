@@ -6,6 +6,8 @@ import java.net.Socket;
 public class ClientHandler implements Runnable {
     private final Socket socket;
     private final String clientInfo;
+    private final String password = "hejsan123";
+
 
     public ClientHandler(Socket socket) {
         this.socket = socket;
@@ -13,34 +15,37 @@ public class ClientHandler implements Runnable {
 
     }
 
+    @Override
     public void run() {
         try (
-            InputStreamReader inputReader = new InputStreamReader(new BufferedInputStream(socket.getInputStream()));
-            OutputStreamWriter outputWriter = new OutputStreamWriter(new BufferedOutputStream(socket.getOutputStream()));
-            BufferedReader bufferedReader = new BufferedReader(inputReader);
-            BufferedWriter bufferedWriter = new BufferedWriter(outputWriter)
+            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            BufferedWriter out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()))
         ) {
-            String messageToClient = "Connected to server";
-            bufferedWriter.write("server: " + messageToClient);
-            bufferedWriter.newLine();
-            bufferedWriter.flush();
+            out.write("Enter password och test: \n");
+            out.newLine();
+            out.flush();
+
+            String enteredPassword = in.readLine();
+            if (!password.equals(enteredPassword)) {
+                out.write("Wrong password\n");
+                out.newLine();
+                out.flush();
+                return;
+            }
+
+            out.write("Correct password, connected to server");
+            out.newLine();
+            out.flush();
 
             String messageFromClient;
-            while ((messageFromClient = bufferedReader.readLine()) != null) {
+            while ((messageFromClient = in.readLine()) != null) {
                 System.out.println("client: " +clientInfo +" " +messageFromClient);
-
                 if (messageFromClient.equalsIgnoreCase("EXIT")) {
-                    bufferedWriter.write("server: Goodbye.");
-                    bufferedWriter.newLine();
-                    bufferedWriter.flush();
-                    bufferedWriter.close();
+                    out.write("server: Goodbye!");
+                    out.newLine();
+                    out.flush();
                     break;
-
                 }
-
-                bufferedWriter.write("server: received" + messageFromClient);
-                bufferedWriter.newLine();
-                bufferedWriter.flush();
             }
 
             System.out.println("client disconnected");
