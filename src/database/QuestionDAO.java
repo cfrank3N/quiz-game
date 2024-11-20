@@ -9,8 +9,21 @@ import java.util.List;
 import java.util.Optional;
 
 public class QuestionDAO implements DAO<Question>{
-    private final SerializationManager<Question> sm = new SerializationManager<>();
-    private final String filepath = "src/database/questions.ser";
+    //Called "eager initialization", supposedly loads this at class loading therefore won't result in multiple instances?
+    private final SerializationManager sm;//Can't handle exceptions properly maybe?
+    private static QuestionDAO instance;
+
+    public QuestionDAO() {
+        sm = SerializationManager.getInstance();
+    }
+
+//    public static QuestionDAO getInstance() {
+//        if (instance == null) {
+//            instance = new QuestionDAO();
+//        }
+//
+//        return instance;
+//    }
 
     @Override
     public Optional<Question> findOne(Predicate p) {
@@ -32,14 +45,10 @@ public class QuestionDAO implements DAO<Question>{
 
     @Override
     public void save(Question question) {
-        sm.append(question, filepath);
+        sm.write(question);
     }
 
     public List<Question> retrieveAll() {
-        try {
-            return sm.deserialize(filepath);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        return sm.read();
     }
 }

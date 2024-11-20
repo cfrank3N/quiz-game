@@ -39,6 +39,10 @@ public class Question implements Serializable {
 //man kan antingen returnera listan i slutet eller skriva ut listan efter man är klar.
     }
 
+    public ArrayList<String> getSubjectQuestions() {
+        return subjectQuestions;
+    }
+
     //Beror lite på hur vi ska ha spelet. Antagligen knappar då får man bara skriva om lite. Men antagligen får man skriva om lite
     public boolean ifAnswerIsCorrect(String playerAnswer) {
 

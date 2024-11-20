@@ -9,4 +9,5 @@ public interface DAO<T> {
     List<T> findAll(Predicate p);
     void delete(Predicate p);
     void save(T t);
+    List<T> retrieveAll();
 }
