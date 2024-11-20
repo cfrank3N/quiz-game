@@ -7,6 +7,7 @@ public class Server {
     private final int PORT = 50001;
     private final String MULTICAST_GROUP = "230.0.0.0";
     private final int MULTICAST_PORT = 50000;
+    private final String pw = "hej";
 
     public static void main(String[] args) {
        new Server().startServer();
@@ -49,7 +50,7 @@ public class Server {
             out.flush();
 
             String enteredPassword = in.readLine();
-            if (!"hejsan123".equals(enteredPassword)) {
+            if (!pw.equals(enteredPassword)) {
                 out.write("Wrong password. Disconnecting.");
                 out.newLine();
                 out.flush();
