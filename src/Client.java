@@ -3,8 +3,8 @@ import java.net.Socket;
 
 public class Client {
     public static void main(String[] args) {
-        String serverAdress = "192.168.1.35";
-        int port = 50001;
+        String serverAdress = "localhost";
+        int port = 55555;
 
         try (
             Socket socket = new Socket(serverAdress, port);
