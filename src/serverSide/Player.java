@@ -9,6 +9,15 @@ public class Player {
     private final ObjectInputStream in;
     private final ObjectOutputStream out;
     private int point;
+    private Player opponent;
+
+    public Player getOpponent() {
+        return opponent;
+    }
+
+    public void setOpponent(Player opponent) {
+        this.opponent = opponent;
+    }
 
     public int getPoint() {
         return point;

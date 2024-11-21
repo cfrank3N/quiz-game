@@ -4,32 +4,36 @@ public class Game extends Thread {
 
     private final Player p1;
     private final Player p2;
+    private Player currentPlayer;
 
     public Game(Player p1, Player p2) {
         this.p1 = p1;
         this.p2 = p2;
+        currentPlayer = p1;
     }
 
     public void run() {
 
         try {
-            String personName, messageToClient;
+            String messageFromClient, messageToClient;
 
             messageToClient = "Welcome to the server!";
             p1.sendToClient(messageToClient);
             p2.sendToClient(messageToClient);
 
+            //Sets opponent as each other.
+            p1.setOpponent(p2);
+            p2.setOpponent(p1);
+
+            currentPlayer = p1; //Sets current player
+            //Listens to and sends info to the current player.
             while (true) {
-                p1.sendToClient("YOUR TURN");
-                personName = (String) p1.receiveFromClient();
-                messageToClient = "Acceptable input" + personName;
-                p1.sendToClient(messageToClient);
-                p1.sendToClient("WAIT");
-                p2.sendToClient("YOUR TURN");
-                personName = (String) p2.receiveFromClient();
-                messageToClient = "Acceptable input" + personName;
-                p2.sendToClient(messageToClient);
-                p2.sendToClient("WAIT");
+                currentPlayer.sendToClient("YOUR TURN"); //Sends message to client
+                messageFromClient = (String) currentPlayer.receiveFromClient(); //Receives message from client
+                messageToClient = "Acceptable input\n" + messageFromClient;
+                currentPlayer.sendToClient(messageToClient); //Sends back a message + what the client sent
+                currentPlayer.sendToClient("WAIT"); //Sends wait to client to prompt it to wait for a new message from the server and to let the other player "play"
+                currentPlayer = currentPlayer.getOpponent(); //Changes to the other player.
             }
 
         } catch (Exception e) {
