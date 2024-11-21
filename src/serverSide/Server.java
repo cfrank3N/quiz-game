@@ -1,29 +1,38 @@
 package serverSide;
 
-import java.io.*;
+import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
 public class Server {
-    private final int PORT = 50001;
 
-    public static void main(String[] args) {
-       new Server().startServer();
-    }
-    public void startServer () {
-        try (ServerSocket serverSock = new ServerSocket(PORT)) {
-            System.out.println("Server started: port " + PORT);
+    public void startServer() {
+
+        try (ServerSocket serverSocket = new ServerSocket(55555)) {
 
             while (true) {
-                Socket clientSocket = serverSock.accept();
-                System.out.println("Client connected: " + clientSocket.getRemoteSocketAddress());
+                Socket socket1 = serverSocket.accept();
+                Player p1 = new Player(socket1);
+                System.out.println("Client one connected");
+                Socket socket2 = serverSocket.accept();
+                Player p2 = new Player(socket2);
+                System.out.println("Client two connected");
 
-                ClientHandler clientHandler = new ClientHandler(clientSocket);
-                Thread clientThread = new Thread(clientHandler);
-                clientThread.start();
+                Game game = new Game(p1, p2);
+                game.start();
+                System.out.println("Server started");
+
             }
+
         } catch (IOException e) {
-            System.err.println("Problem with server" + e.getMessage());
+            throw new RuntimeException(e);
         }
+
     }
+
+    public static void main(String[] args) {
+        Server server = new Server();
+        server.startServer();
+    }
+
 }
