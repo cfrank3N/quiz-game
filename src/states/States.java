@@ -1,7 +1,7 @@
 package states;
 
 public enum States {
-    //Förslag på states
+    //Suggestions on a few states the client can be in. Maybe add some for the server as well?
     WAITING,
     SEND_CATEGORIES,
     SEND_QUESTIONS,

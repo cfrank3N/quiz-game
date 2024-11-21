@@ -18,6 +18,7 @@ public class Player {
         this.point = point;
     }
 
+    //Constructor taking in a socket and defining the input and outputstreams for the player.
     public Player(Socket socket) {
         this.socket = socket;
         try {
@@ -28,11 +29,13 @@ public class Player {
         }
     }
 
+    //Sends a message in the form of an object to the client
     public void sendToClient(String message) throws IOException {
         out.writeObject(message);
         out.flush();
     }
 
+    //Receives a message in the form of an object to the client
     public Object receiveFromClient() throws ClassNotFoundException, IOException {
         return in.readObject();
     }

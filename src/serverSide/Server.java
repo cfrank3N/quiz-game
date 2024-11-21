@@ -5,7 +5,14 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 public class Server {
-
+    /***
+     * Starts a server socket and waits for two clients to connect.
+     * Socket 1 = client 1
+     * Socket 2 = client 2
+     * Creates a player for each client with the clients sockets.
+     * Then it creates a game that accepts two players as parameters (player 1 and player 2)
+     * And lastly it starts a game in a new thread.
+     */
     public void startServer() {
 
         try (ServerSocket serverSocket = new ServerSocket(55555)) {
