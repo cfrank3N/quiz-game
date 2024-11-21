@@ -21,10 +21,10 @@ import java.util.concurrent.LinkedBlockingDeque;
 
 public class Server {
     private final int PORT = Constants.PORT;
-    private List<Player> players = new ArrayList<>();
+    private final List<Player> players = new ArrayList<>();
+    BlockingDeque<Player> playerQueue = new LinkedBlockingDeque<>();
 
     public Server () {
-        BlockingDeque<Player> playerQueue = new LinkedBlockingDeque<>();
     }
 
     public void startServer () {
@@ -35,11 +35,41 @@ public class Server {
                 Socket clientSocket = serverSock.accept();
                 System.out.println("Client connected: " + clientSocket.getRemoteSocketAddress());
 
-                Player player =
+                new Thread(() -> {
+                    try {
+                        handleClient(clientSocket);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }).start();
+
+                // lägg till player
+
 
             }
         } catch (IOException e) {
             System.err.println("Problem with server" + e.getMessage());
+        }
+    }
+
+    private void handleClient(Socket clientSocket) throws IOException {
+        try(ObjectOutputStream out = new ObjectOutputStream(clientSocket.getOutputStream());
+            ObjectInputStream in = new ObjectInputStream(clientSocket.getInputStream())) {
+
+            out.writeObject("Enter username: ");
+            String playerName = (String) in.readObject();
+
+            Player.PlayerOrder order = players.size() % 2 == 0
+                    ? Player.PlayerOrder.PLAYER_ONE
+                    : Player.PlayerOrder.PLAYER_TWO;
+
+            Player newPlayer = new Player(clientSocket, playerName, order);
+
+            players.add(newPlayer);
+            players.add(newPlayer);
+
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
         }
     }
 
