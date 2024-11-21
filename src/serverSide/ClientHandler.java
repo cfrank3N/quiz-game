@@ -6,7 +6,6 @@ import java.net.Socket;
 public class ClientHandler implements Runnable {
     private final Socket socket;
     private final String clientInfo;
-    private final String password = "hejsan123";
 
 
     public ClientHandler(Socket socket) {
@@ -21,33 +20,6 @@ public class ClientHandler implements Runnable {
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             BufferedWriter out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()))
         ) {
-            out.write("Enter password och test: \n");
-            out.newLine();
-            out.flush();
-
-            String enteredPassword = in.readLine();
-            if (!password.equals(enteredPassword)) {
-                out.write("Wrong password\n");
-                out.newLine();
-                out.flush();
-                return;
-            }
-
-            out.write("Correct password, connected to server");
-            out.newLine();
-            out.flush();
-
-            String messageFromClient;
-            while ((messageFromClient = in.readLine()) != null) {
-                System.out.println("client: " +clientInfo +" " +messageFromClient);
-                if (messageFromClient.equalsIgnoreCase("EXIT")) {
-                    out.write("server: Goodbye!");
-                    out.newLine();
-                    out.flush();
-                    break;
-                }
-            }
-
             System.out.println("client disconnected");
 
         } catch (IOException e) {
