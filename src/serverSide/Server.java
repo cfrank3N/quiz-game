@@ -6,6 +6,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.BlockingDeque;
+import java.util.concurrent.LinkedBlockingDeque;
 
 /*
 * starta serverSocket
@@ -21,6 +23,10 @@ public class Server {
     private final int PORT = Constants.PORT;
     private List<Player> players = new ArrayList<>();
 
+    public Server () {
+        BlockingDeque<Player> playerQueue = new LinkedBlockingDeque<>();
+    }
+
     public void startServer () {
         try (ServerSocket serverSock = new ServerSocket(PORT)) {
             System.out.println("Server started: port " + PORT);
@@ -29,7 +35,7 @@ public class Server {
                 Socket clientSocket = serverSock.accept();
                 System.out.println("Client connected: " + clientSocket.getRemoteSocketAddress());
 
-                // create player
+                Player player =
 
             }
         } catch (IOException e) {
