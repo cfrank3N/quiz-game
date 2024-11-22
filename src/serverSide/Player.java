@@ -15,26 +15,28 @@ public class Player implements Serializable {
     private transient ObjectInputStream objectIn;
     private String playerName;
     private int points;
-    private static int playerIDGenerator;
-    private final int playerID = playerIDGenerator;
+//    private static int playerIDGenerator;
+//    private final int playerID = playerIDGenerator;
 
     public enum PlayerOrder {PLAYER_ONE, PLAYER_TWO}
     private final PlayerOrder playerOrder;
 
-    public Player(Socket socket, String playerName, PlayerOrder playerOrder) {
+    public Player(Socket socket, String playerName, PlayerOrder playerOrder, int points) {
         this.socket = socket;
         this.playerName = playerName;
         this.playerOrder = playerOrder;
-        playerIDGenerator++;
+        this.points = points;
+
+//        playerIDGenerator++;
     }
 
     public int getPoints() {
         return points;
     }
 
-    public int getPlayerID() {
-        return playerID;
-    }
+//    public int getPlayerID() {
+//        return playerID;
+//    }
 
     public void addPoints(int pointsToAdd) {
         this.points += pointsToAdd;
@@ -54,8 +56,5 @@ public class Player implements Serializable {
     }
 
     public void createPlayer () {
-
     }
-
-
 }

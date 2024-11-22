@@ -17,8 +17,6 @@ import java.util.concurrent.LinkedBlockingDeque;
 * ett game är en tråd?
 * */
 
-
-
 public class Server {
     private final int PORT = Constants.PORT;
     private final List<Player> players = new ArrayList<>();
@@ -35,6 +33,8 @@ public class Server {
                 Socket clientSocket = serverSock.accept();
                 System.out.println("Client connected: " + clientSocket.getRemoteSocketAddress());
 
+
+
                 new Thread(() -> {
                     try {
                         handleClient(clientSocket);
@@ -42,8 +42,10 @@ public class Server {
                         throw new RuntimeException(e);
                     }
                 }).start();
+                Thread gameThread = new Thread();
+                gameThread.start();
 
-                // lägg till player
+                Player player = new Player(clientSocket, "name", Player.PlayerOrder.PLAYER_ONE,0);
 
 
             }
@@ -63,7 +65,7 @@ public class Server {
                     ? Player.PlayerOrder.PLAYER_ONE
                     : Player.PlayerOrder.PLAYER_TWO;
 
-            Player newPlayer = new Player(clientSocket, playerName, order);
+            Player newPlayer = new Player(clientSocket, playerName, order, 0);
 
             players.add(newPlayer);
             players.add(newPlayer);
