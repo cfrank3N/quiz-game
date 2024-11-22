@@ -2,6 +2,7 @@ package clientSide;
 
 import java.io.*;
 import java.net.Socket;
+
 import java.util.Scanner;
 
 public class Client {
@@ -49,5 +50,4 @@ public class Client {
         Client client = new Client();
         client.startClient();
     }
-
 }
