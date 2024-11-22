@@ -1,4 +1,4 @@
-package serverSide;
+package enums;
 
 public enum ESubject {
 SUBJECT1,

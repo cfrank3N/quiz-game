@@ -1,5 +1,8 @@
 package clientSide;
 
+import packettosend.Pack;
+import serverSide.Question;
+
 import java.io.*;
 import java.net.Socket;
 
@@ -17,32 +20,35 @@ public class Client {
              ObjectInputStream in = new ObjectInputStream(socket.getInputStream())
         ) {
 
-            String messageToServer, messageFromServer;
+            Object messageFromServer;
 
             System.out.println(in.readObject()); //Prints welcome message from server
 
             while (true) {
-                messageFromServer = (String) in.readObject(); //Listens to server to determine what to do
-
-                if (messageFromServer.contains("YOUR TURN")) {  //Checks serverMessage and determines what to do.
-                    System.out.println("Your turn! Search for a person"); //Message to client from client
-                    messageToServer = input.nextLine(); //Takes in input from user
-
-                    if (messageToServer.equalsIgnoreCase("quit")) { //If it is "quit" then exit the loop
-                        break;
-                    }
-
-                    out.writeObject(messageToServer); //Write message to server
-                    out.flush();
-                    messageFromServer = (String) in.readObject(); //Recieve message from server again
-                    System.out.println(messageFromServer); //Print server message to client
-                } else if (messageFromServer.contains("WAIT")) { //Waits for a new reply from the server if the initial serverMessage contained "WAIT"
-                    System.out.println("Wait for the other player!");
-                }
+                messageFromServer = in.readObject();
+                determineAction(messageFromServer);
+                out.writeObject("Question Answered");
             }
 
         } catch (IOException | ClassNotFoundException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    public void determineAction(Object fromServer) {
+        Pack packFromServer = (Pack) fromServer;
+        Scanner input = new Scanner(System.in);
+        switch (packFromServer.header()) {
+            case WAIT:
+                System.out.println(packFromServer.object());
+                break;
+            case QUESTION:
+                Question question = (Question) packFromServer.object();
+                System.out.println(question.getQuestion());
+                System.out.println(question.getSubjectQuestions());
+                break;
+            default:
+                break;
         }
     }
 

@@ -1,5 +1,8 @@
 package serverSide;
 
+import enums.ESubject;
+
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -9,6 +12,8 @@ public class Question implements Serializable {
     private String correctAnswer;
     private ESubject subject;
     private String question;
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     public Question(String q1, String q2, String q3, String correctAnswer, ESubject subject, String question) {
 

@@ -1,11 +1,8 @@
 package database;
 
-import serverSide.ESubject;
-import serverSide.Question;
+import enums.ESubject;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class TestingEnv {
     public static void main(String[] args) throws IOException {

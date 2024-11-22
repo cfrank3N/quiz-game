@@ -39,8 +39,8 @@ public class Player {
     }
 
     //Sends a message in the form of an object to the client
-    public void sendToClient(String message) throws IOException {
-        out.writeObject(message);
+    public void sendToClient(Object objectToSend) throws IOException {
+        out.writeObject(objectToSend);
         out.flush();
     }
 

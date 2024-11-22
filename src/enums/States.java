@@ -1,10 +1,12 @@
-package states;
+package enums;
 
 public enum States {
     //Suggestions on a few states the client can be in. Maybe add some for the server as well?
-    WAITING,
+    WAIT,
+    CHOOSE_CATEGORY,
+    PLAYING,
     SEND_CATEGORIES,
-    SEND_QUESTIONS,
+    QUESTION,
     SEND_ANSWER,
     SEND_CORRECT_ANSWER,
 
