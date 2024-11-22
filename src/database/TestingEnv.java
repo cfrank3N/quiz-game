@@ -21,6 +21,6 @@ public class TestingEnv {
 //            System.out.println(q.getSubjectQuestions());
 //        }
 
-        System.out.println(dao.findOneBySubject(ESubject.SUBJECT2).getSubjectQuestions());
+        System.out.println(dao.oneBySubject(ESubject.SUBJECT2).getSubjectQuestions());
     }
 }

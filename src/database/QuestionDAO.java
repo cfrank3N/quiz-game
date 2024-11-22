@@ -17,7 +17,7 @@ public class QuestionDAO {
         sm = SerializationManager.getInstance();
     }
 
-    public Question randomBySubject(ESubject subject) throws IOException {
+    public Question oneBySubject(ESubject subject) throws IOException {
         Predicate<Question> p = q -> q.getSubject().equals(subject);
 
         return findOne(p);
