@@ -36,7 +36,7 @@ public class GameLook extends JFrame {
         // Anpassa komponenter
         picture.setIcon(profile);
         userName.setFont(new Font("Arial", Font.BOLD, 16));
-
+        score.setFont(new Font("Arial", Font.BOLD, 16));
         newGame.setFont(new Font("Arial", Font.BOLD, 16));
 
 
