@@ -15,7 +15,7 @@ public class Client {
         Scanner input = new Scanner(System.in); //Defines a Scanner to print messages to server. Will delete this later.
 
         //Initializes input and outputstreams
-        try (Socket socket = new Socket("127.0.0.1", 55555);
+        try (Socket socket = new Socket("127.0.0.1", 12345);
              ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
              ObjectInputStream in = new ObjectInputStream(socket.getInputStream())
         ) {

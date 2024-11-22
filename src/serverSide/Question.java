@@ -16,7 +16,6 @@ public class Question implements Serializable {
     private static final long serialVersionUID = 1L;
 
     public Question(String q1, String q2, String q3, String correctAnswer, ESubject subject, String question) {
-
         subjectQuestions.add(q1);
         subjectQuestions.add(q2);
         subjectQuestions.add(q3);
