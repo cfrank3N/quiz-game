@@ -1,54 +1,39 @@
 package database;
 
 
+import serverSide.ESubject;
 import serverSide.Question;
 
 import javax.sql.rowset.Predicate;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
-public class QuestionDAO implements DAO<Question>{
-    //Called "eager initialization", supposedly loads this at class loading therefore won't result in multiple instances?
+public class QuestionDAO {
     private final SerializationManager sm;//Can't handle exceptions properly maybe?
-    private static QuestionDAO instance;
 
     public QuestionDAO() {
         sm = SerializationManager.getInstance();
     }
 
-//    public static QuestionDAO getInstance() {
-//        if (instance == null) {
-//            instance = new QuestionDAO();
-//        }
-//
-//        return instance;
-//    }
-
-    @Override
-    public Optional<Question> findOne(Predicate p) {
-        //Deserialize entire questions.txt
-        //Search through list
-        //Return optional question
-        return null;
+    public Question findOne(ESubject subject) throws IOException {
+        List<Question> all = findAll(subject);
+        Collections.shuffle(all);
+        return all.getFirst();
     }
 
-    @Override
-    public List<Question> findAll(Predicate p) {
-        return List.of();
+    public List<Question> findAll(ESubject subject) throws IOException {
+        return new ArrayList<>(sm.deserialize().stream().filter(q -> q.getSubject().equals(subject)).toList());
     }
 
-    @Override
-    public void delete(Predicate p) {
-
+    public List<Question> retrieveAll() throws IOException {
+        return sm.deserialize();
     }
 
-    @Override
-    public void save(Question question) {
-        sm.write(question);
-    }
-
-    public List<Question> retrieveAll() {
-        return sm.read();
+    public void overwrite(List<Question> questions) {
+        sm.serialize(questions);
     }
 }
