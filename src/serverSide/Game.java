@@ -25,7 +25,6 @@ public class Game extends Thread {
             p1.setOpponent(p2);
             p2.setOpponent(p1);
 
-            currentPlayer = p1; //Sets current player
             //Listens to and sends info to the current player.
             while (true) {
                 currentPlayer.sendToClient("YOUR TURN"); //Sends message to client
