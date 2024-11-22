@@ -14,7 +14,7 @@ public class GameLook extends JFrame {
 
     ImageIcon profile = new ImageIcon("src/serverSide/image/profilbild.jpg");
     JLabel userName = new JLabel("Username");
-    JLabel waitingPlayer = new JLabel("Waiting for player two");
+    JLabel waitingPlayer = new JLabel("Waiting for second player");
     JLabel picture = new JLabel();
 
     public GameLook() {
@@ -28,10 +28,14 @@ public class GameLook extends JFrame {
         headPanel.setLayout(new BorderLayout());
         northPanel.setLayout(new BorderLayout());
         panel2.setLayout(new FlowLayout());
+        inNorthPanelSouth.setLayout(new BoxLayout(inNorthPanelSouth, BoxLayout.Y_AXIS));
+        userName.setAlignmentX(Component.CENTER_ALIGNMENT);
+        waitingPlayer.setAlignmentX(Component.CENTER_ALIGNMENT);
         panel2.setBackground(Color.CYAN);
         inNorthPanelCenter.setBackground(Color.CYAN);
         inNorthPanelSouth.setBackground(Color.CYAN);
         headPanel.setBackground(Color.CYAN);
+
 
         // Anpassa komponenter
         picture.setIcon(profile);
@@ -45,6 +49,7 @@ public class GameLook extends JFrame {
         panel2.add(score);
         inNorthPanelCenter.add(picture);
         inNorthPanelSouth.add(userName);
+        inNorthPanelSouth.add(waitingPlayer);
 
         // Lägg till paneler
         headPanel.add(northPanel, BorderLayout.CENTER);
