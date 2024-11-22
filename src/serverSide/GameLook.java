@@ -29,8 +29,6 @@ public class GameLook extends JFrame {
         northPanel.setLayout(new BorderLayout());
         panel2.setLayout(new FlowLayout());
         inNorthPanelSouth.setLayout(new BoxLayout(inNorthPanelSouth, BoxLayout.Y_AXIS));
-        userName.setAlignmentX(Component.CENTER_ALIGNMENT);
-        waitingPlayer.setAlignmentX(Component.CENTER_ALIGNMENT);
         panel2.setBackground(Color.CYAN);
         inNorthPanelCenter.setBackground(Color.CYAN);
         inNorthPanelSouth.setBackground(Color.CYAN);
@@ -42,7 +40,8 @@ public class GameLook extends JFrame {
         userName.setFont(new Font("Arial", Font.BOLD, 16));
         score.setFont(new Font("Arial", Font.BOLD, 16));
         newGame.setFont(new Font("Arial", Font.BOLD, 16));
-
+        userName.setAlignmentX(Component.CENTER_ALIGNMENT);
+        waitingPlayer.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         // Lägg till komponenter
         panel2.add(newGame);
