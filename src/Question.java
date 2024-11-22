@@ -4,6 +4,7 @@ import java.util.Collections;
 public class Question {
     ArrayList<String> subjectQuestions = new ArrayList<>();
     private String correctAnswer;
+//    private ESubject mysubject;
 
     public Question(String q1, String q2, String q3, String correctAnswer) {
 /*
@@ -21,7 +22,7 @@ public class Question {
         Collections.shuffle(subjectQuestions);
 
         //Den metod som stämmer överens med ämne.
-        }else if (subject = ex: kroppen){ //kroppen är då ett ämne
+        }else if (subject = ex: kroppen){//kroppen är då ett ämne
         Call method;
         }
 
@@ -33,7 +34,7 @@ public class Question {
         this.correctAnswer = correctAnswer;
         Collections.shuffle(subjectQuestions);
 
-//man kan antingen returnera listan i slutet eller skriva ut listan efter man är klar.
+
     }
 
     //Beror lite på hur vi ska ha spelet. Antagligen knappar då får man bara skriva om lite. Men antagligen får man skriva om lite
