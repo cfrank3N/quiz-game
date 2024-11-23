@@ -1,39 +1,74 @@
 package database;
 
-import serverSide.Question;
-
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 
-//There should only be one serialization manager per DAO, might have to refactor things so this always holds true and no one can instantiate a serialization manager that modifies the same file as another serialization manager.
-public class SerializationManager {
-    private final String filepath = "src/database/questions.ser";
-    private static SerializationManager instance = new SerializationManager();
+public class SerializationManager<T> {
+    private final String tempFilePath;
+    private final String permanentFilePath;
+    private final String name;
+    private State state;
 
 
-    private SerializationManager () {
+    public SerializationManager(String tempFilePath, String permanentFilePath, String name) {
+        this.tempFilePath = tempFilePath;
+        this.permanentFilePath = permanentFilePath;
+        this.name = name;
+        state = State.IDLE;
     }
 
-    public static SerializationManager getInstance() {
-        return instance;
+    public synchronized void write(T object) {
+        while (state.equals(State.READING)) {
+            try {
+                wait();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        state = State.WRITING;
+        append(object);
+        state = State.IDLE;
+        notify();
     }
 
-    //TODO: Should not be needed, must be a method with an append flag probably?
-    public void append(Question object) {
-        Path path = Paths.get(filepath);
+    public synchronized List<T> read() {
+        while (state.equals(State.WRITING)) {
+            try {
+                wait();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        state = State.READING;
+        List<T> objects = null;
+        try {
+            objects = deserialize();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        state = State.IDLE;
+        notify();
+        return objects;
+    }
+
+    public void append(T object) {
+        Path path = Paths.get(permanentFilePath);
 
         try {
             if (!Files.exists(path) || (Files.size(path) == 0)) {
-                List<Question> list = new ArrayList<>(List.of(object));
+                List<T> list = new ArrayList<>(List.of(object));
                 serialize(list);
             } else {
-                List<Question> previous = deserialize(); //Load previous content
+                List<T> previous = deserialize(); //Load previous content
 //                       writing = true;
-                List<Question> newObjects = new ArrayList<>();
+                List<T> newObjects = new ArrayList<>();
                 newObjects.addAll(previous);
                 newObjects.add(object);
                 serialize(newObjects);
@@ -43,28 +78,31 @@ public class SerializationManager {
         }
     }
 
-    public void serialize(List<Question> objects) {
-        try (FileOutputStream fileout = new FileOutputStream(filepath);
+    public void serialize(List<T> objects) {
+        try (FileOutputStream fileout = new FileOutputStream(tempFilePath);
              ObjectOutputStream objectout = new ObjectOutputStream(fileout)) {
 
             objectout.writeObject(objects);
 
+            Path source = Paths.get(tempFilePath);
+
+            Files.move(source, source.resolveSibling(name), StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public List<Question> deserialize() throws IOException {
-        if (!Paths.get(filepath).toFile().exists()) {
+    public List<T> deserialize() throws IOException {
+        if (!Paths.get(permanentFilePath).toFile().exists()) {
             throw new IOException("File does not exist.");
-        } else if (Paths.get(filepath).toFile().length() == 0) {
+        } else if (Paths.get(permanentFilePath).toFile().length() == 0) {
             return new ArrayList<>();
         }
 
-        List<Question> objects = new ArrayList<>();
-        try (FileInputStream fileIn = new FileInputStream(filepath);
+        List<T> objects = new ArrayList<>();
+        try (FileInputStream fileIn = new FileInputStream(permanentFilePath);
              ObjectInputStream in = new ObjectInputStream(fileIn)) {
-                objects = (List<Question>) in.readObject(); //TODO Hm...
+                objects = (List<T>) in.readObject();
         }
         catch(IOException | ClassNotFoundException e) {
             e.printStackTrace();
