@@ -1,15 +1,19 @@
 package serverSide;
 
+import javax.swing.*;
 import java.io.Serializable;
 
 public class User implements Serializable {
-    private String name, email;
+    private String username, name, email;
     private int age;
+    private ImageIcon avatar;
 
-    public User(String name, String email, int age) {
+    public User(String username, String name, String email, int age, ImageIcon avatar) {
+        this.username = username;
         this.name = name;
         this.email = email;
         this.age = age;
+        this.avatar = avatar;
     }
 
     public String getName() {
@@ -34,6 +38,22 @@ public class User implements Serializable {
 
     public void setAge(int age) {
         this.age = age;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public ImageIcon getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(ImageIcon avatar) {
+        this.avatar = avatar;
     }
 
     @Override
