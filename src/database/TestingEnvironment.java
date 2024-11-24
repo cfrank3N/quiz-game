@@ -1,6 +1,6 @@
 package database;
 
-import serverSide.ESubject;
+import enums.ESubject;
 import serverSide.Question;
 import serverSide.User;
 
@@ -11,8 +11,8 @@ public class TestingEnvironment {
     public static void main(String[] args) {
         QuestionRepository qr = new QuestionRepository();
         UserRepository ur = new UserRepository();
-//        List<Question> questions = new ArrayList<>();
-//
+        List<Question> questions = new ArrayList<>();
+
 //        questions.add(new Question("Choice A", "Choice B", "Choice C", "Choice D", ESubject.SUBJECT1, "What is 2 + 2?"));
 //        questions.add(new Question("Mercury", "Venus", "Mars", "Earth", ESubject.SUBJECT2, "Which planet is third from the sun?"));
 //        questions.add(new Question("Oxygen", "Carbon", "Nitrogen", "Hydrogen", ESubject.SUBJECT3, "What is the most abundant gas in Earth's atmosphere?"));
@@ -37,7 +37,7 @@ public class TestingEnvironment {
         for (Question q : retrieved) {
             System.out.println(q.getSubjectQuestions());
         }
-//
+
 //        List<User> users = new ArrayList<>();
 //
 //        // Add 5 users to the list
