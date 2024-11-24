@@ -15,7 +15,7 @@ public class Server {
      */
     public void startServer() {
 
-        try (ServerSocket serverSocket = new ServerSocket(55555)) {
+        try (ServerSocket serverSocket = new ServerSocket(12345)) {
 
             while (true) {
                 Socket socket1 = serverSocket.accept();
