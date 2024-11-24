@@ -1,7 +1,8 @@
 package database;
 
-import serverSide.ESubject;
+import enums.ESubject;
 import serverSide.Question;
+
 
 import java.io.IOException;
 import java.util.ArrayList;

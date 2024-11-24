@@ -1,6 +1,6 @@
 package serverSide;
 
-import database.QuestionDAO;
+import database.QuestionRepository;
 import packettosend.Pack;
 import enums.GameState;
 import enums.States;
@@ -17,7 +17,7 @@ public class Game extends Thread {
     private final Player p1;
     private final Player p2;
     private Player currentPlayer;
-    private final QuestionDAO db = new QuestionDAO();
+    private final QuestionRepository db = new QuestionRepository();
     private GameState status = FIRST_STEP;
 
     public Game(Player p1, Player p2) {
