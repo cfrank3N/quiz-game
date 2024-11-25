@@ -54,8 +54,8 @@ public class Client {
             case PLAYER_DTO:
                 PlayerDTO opponentInformation = (PlayerDTO) packFromServer.object();
 
-                Player me = new Player(0, user.getUsername());
-                Player opponent = new Player(0, opponentInformation.name());
+                Player me = new Player(0, user.getUsername(), new ImageIcon(user.getAvatarPath()));
+                Player opponent = new Player(0, opponentInformation.name(), new ImageIcon(opponentInformation.avatarPath()));
 
                 board = new Board(me, opponent);
                 break;
