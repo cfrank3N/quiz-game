@@ -25,12 +25,12 @@ public class GameLook extends JFrame implements ActionListener {
     JPanel mainPanel = new BackgroundPanel("src/serverSide/image/QuizBackground.jpg");
     JPanel thePanelForButton = new JPanel();
     JPanel questionPanel = new JPanel();
-    JLabel questionLabel = new JLabel("Choose your category");
-    JButton question1 = new JButton("Subject 1");
-    JButton question2 = new JButton("Subject 2");
-    JButton question3 = new JButton("Subject 3");
-    JButton question4 = new JButton("subject 4");
-    //JButton theEmptyButton = new JButton("");
+    JLabel questionLabel = new JLabel("The question?");
+    JButton question1 = new JButton("Question 1");
+    JButton question2 = new JButton("question 2");
+    JButton question3 = new JButton("Question 3");
+    JButton question4 = new JButton("Question 4");
+    JButton theEmptyButton = new JButton("");
 
     //JFrame for the "lobby"
     JPanel headPanel = new BackgroundPanel("src/serverSide/image/QuizBackground.jpg");
@@ -119,13 +119,19 @@ public class GameLook extends JFrame implements ActionListener {
         gameFrame.add(firstPanel);
         firstPanel.add(buttonPanel, BorderLayout.CENTER);
         firstPanel.add(categoryPanel, BorderLayout.NORTH);
-        categoryPanel.add(chooseCategory, BorderLayout.CENTER);
+        categoryPanel.add(chooseCategory, BorderLayout.SOUTH);
         buttonPanel.add(emptyButton);
 
         buttonPanel.add(subject1);
         buttonPanel.add(subject2);
         buttonPanel.add(subject3);
         buttonPanel.add(subject4);
+
+        //lägger till action-listener för de olika knapparna
+        subject1.addActionListener(this);
+        subject2.addActionListener(this);
+        subject3.addActionListener(this);
+        subject4.addActionListener(this);
 
         //Anpassning av komponenter och utseende
         emptyButton.setContentAreaFilled(false);
@@ -137,7 +143,7 @@ public class GameLook extends JFrame implements ActionListener {
         categoryPanel.setOpaque(false);
         buttonPanel.setOpaque(false);
 
-        emptyButton.setPreferredSize(new Dimension(500, 50));
+        emptyButton.setPreferredSize(new Dimension(500, 225));
         subject1.setPreferredSize(new Dimension(225, 150));
         subject2.setPreferredSize(new Dimension(225, 150));
         subject3.setPreferredSize(new Dimension(225, 150));
@@ -156,9 +162,44 @@ public class GameLook extends JFrame implements ActionListener {
         roundFrame.setSize(frameWidth, frameHeight);
         roundFrame.setLocationRelativeTo(null);
 
+        //panels layout
+        mainPanel.setLayout(new BorderLayout());
+        thePanelForButton.setLayout(new FlowLayout());
+        questionPanel.setLayout(new BorderLayout());
 
+        //tillägning av komponenter
+        roundFrame.add(mainPanel);
+        mainPanel.add(questionPanel, BorderLayout.NORTH);
+        mainPanel.add(thePanelForButton, BorderLayout.CENTER);
+        questionPanel.add(questionLabel, BorderLayout.SOUTH);
+        thePanelForButton.add(theEmptyButton);
+        thePanelForButton.add(question1);
+        thePanelForButton.add(question2);
+        thePanelForButton.add(question3);
+        thePanelForButton.add(question4);
 
+        //anpassning av komponenter
+        questionPanel.setOpaque(false);
+        thePanelForButton.setOpaque(false);
+        questionPanel.setPreferredSize(new Dimension(500, 200));
+        questionLabel.setFont(new Font("Arial", Font.BOLD, 30));
+        theEmptyButton.setContentAreaFilled(false);
+        theEmptyButton.setBorderPainted(false);
+        questionLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
+        theEmptyButton.setPreferredSize(new Dimension(500, 225));
+        question1.setPreferredSize(new Dimension(225, 150));
+        question2.setPreferredSize(new Dimension(225, 150));
+        question3.setPreferredSize(new Dimension(225, 150));
+        question4.setPreferredSize(new Dimension(225, 150));
+
+        //Tilläggning av action-listener till knapparna
+        question1.addActionListener(this);
+        question2.addActionListener(this);
+        question3.addActionListener(this);
+        question4.addActionListener(this);
+
+        roundFrame.setVisible(true);
     }
 
     // skapa frame för frågorna och för är waiting player väntar
@@ -177,6 +218,19 @@ public class GameLook extends JFrame implements ActionListener {
         }
         if (e.getSource() == score) {
             JOptionPane.showMessageDialog(this, "The scoreboard does not exits right now");
+        }
+        if(e.getSource() == subject1){
+            RoundStart();
+            //return chosen subject and get the questions
+        } else if (e.getSource() == subject2) {
+            RoundStart();
+            //return chosen subject and get the questions
+        } else if (e.getSource() == subject3) {
+            RoundStart();
+            //return chosen subject and get the questions
+        } else if (e.getSource() == subject4) {
+            RoundStart();
+            //return chosen subject and get the questions
         }
     }
 }
