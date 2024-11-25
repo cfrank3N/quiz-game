@@ -1,15 +1,18 @@
 package serverSide;
 
+import shared.User;
+
 import java.io.*;
 import java.net.Socket;
 
+//Should send to client at start so that client always have access to the way the server views the player
 public class Player {
-
-    private final Socket socket;
-    private final ObjectInputStream in;
-    private final ObjectOutputStream out;
     private int point;
+    private Socket socket;
+    private ObjectOutputStream out;
+    private ObjectInputStream in;
     private Player opponent;
+    private User user;
 
     public Player getOpponent() {
         return opponent;
@@ -27,6 +30,42 @@ public class Player {
         this.point = point;
     }
 
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public Socket getSocket() {
+        return socket;
+    }
+
+    public void setSocket(Socket socket) {
+        this.socket = socket;
+    }
+
+    public ObjectOutputStream getOut() {
+        return out;
+    }
+
+    public void setOut(ObjectOutputStream out) {
+        this.out = out;
+    }
+
+    public ObjectInputStream getIn() {
+        return in;
+    }
+
+    public void setIn(ObjectInputStream in) {
+        this.in = in;
+    }
+
+    public void incrementPoint() {
+        point++;
+    }
+
     //Constructor taking in a socket and defining the input and outputstreams for the player.
     public Player(Socket socket) {
         this.socket = socket;
@@ -36,6 +75,8 @@ public class Player {
         } catch (IOException ex) {
             throw new RuntimeException(ex);
         }
+
+        point = 0;
     }
 
     //Sends a message in the form of an object to the client
@@ -48,5 +89,6 @@ public class Player {
     public Object receiveFromClient() throws ClassNotFoundException, IOException {
         return in.readObject();
     }
+
 
 }

@@ -1,7 +1,7 @@
 package database;
 
 import enums.ESubject;
-import serverSide.Question;
+import shared.Question;
 
 
 import java.io.IOException;

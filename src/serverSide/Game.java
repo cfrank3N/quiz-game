@@ -1,24 +1,24 @@
 package serverSide;
 
 import database.QuestionRepository;
+import enums.ESubject;
 import packettosend.Pack;
 import enums.GameState;
 import enums.States;
-
-import java.util.ArrayList;
-import java.util.List;
+import shared.PlayerDTO;
+import shared.Question;
+import shared.ScoreboardDTO;
+import shared.User;
 
 import static enums.ESubject.SUBJECT3;
-import static enums.GameState.FIRST_STEP;
-import static enums.GameState.SECOND_STEP;
+import static enums.GameState.*;
 
 public class Game extends Thread {
-
     private final Player p1;
     private final Player p2;
     private Player currentPlayer;
     private final QuestionRepository db = new QuestionRepository();
-    private GameState status = FIRST_STEP;
+    private GameState status = SETUP;
 
     public Game(Player p1, Player p2) {
         this.p1 = p1;
@@ -29,31 +29,16 @@ public class Game extends Thread {
     public void run() {
 
         try {
-            Object messageFromClient, messageToClient;
-
-            messageToClient = "Welcome to the server!";
-            p1.sendToClient(messageToClient);
-            p2.sendToClient(messageToClient);
+            Object messageFromClient;
+            p1.sendToClient(new Pack(States.WELCOME, null)); //Acknowledged
+            p2.sendToClient(new Pack(States.WELCOME, null));
 
             //Sets opponent as each other.
             p1.setOpponent(p2);
             p2.setOpponent(p1);
 
-            determineAction(null);
-            //Listens to and sends info to the current player.
             while (true) {
-                messageFromClient = currentPlayer.receiveFromClient();
-                determineAction(messageFromClient);
-                /*
-                currentPlayer.sendToClient(new Pack(States.PLAYING, "Your turn to play")); //Sends message to client
-                currentPlayer.getOpponent().sendToClient(new Pack(States.WAITING, "Waiting for opponent"));
-                messageFromClient = (String) currentPlayer.receiveFromClient(); //Receives message from client
-                messageToClient = "Acceptable input\n" + messageFromClient;
-                currentPlayer.sendToClient(messageToClient); //Sends back a message + what the client sent
-                currentPlayer.sendToClient("WAIT"); //Sends wait to client to prompt it to wait for a new message from the server and to let the other player "play"
-                currentPlayer = currentPlayer.getOpponent(); //Changes to the other player.
-
-                */
+                determineAction();
             }
 
         } catch (Exception e) {
@@ -61,23 +46,64 @@ public class Game extends Thread {
         }
     }
 
-    public void determineAction(Object objectFromClient) {
+    public void determineAction() {
         try {
             switch (status) {
+                case SETUP:
+                    //Retrieve p1 user and send player dto to p2
+                    p1.sendToClient(new Pack(States.SEND_USER, null));
+                    User user = (User) ((Pack) p1.receiveFromClient()).object();
+
+                    p2.sendToClient(new Pack(States.PLAYER_DTO, new PlayerDTO(user.getUsername(), user.getAvatarPath())));
+                    //Retrieve p2 user and send player dto to p1
+                    p2.sendToClient(new Pack(States.SEND_USER, null));
+                    user = (User) ((Pack) p2.receiveFromClient()).object();
+
+                    p1.sendToClient(new Pack(States.PLAYER_DTO, new PlayerDTO(user.getUsername(), user.getAvatarPath())));
+
+                    status = FIRST_STEP;
+                    break;
                 case FIRST_STEP:
                     currentPlayer.getOpponent().sendToClient(new Pack(States.WAIT, "Waiting for opponent"));
-                    currentPlayer.sendToClient(new Pack(States.QUESTION, db.oneBySubject(SUBJECT3)));
-                    currentPlayer.receiveFromClient();
+                    currentPlayer.sendToClient(new Pack(States.CHOOSE_CATEGORY, null));
+                    ESubject subject = (ESubject) (((Pack) currentPlayer.receiveFromClient()).object()); //Wait for subject
+
+                    Question q = db.oneBySubject(subject); //Pick a question
+
+                    currentPlayer.sendToClient(new Pack(States.SEND_ANSWER, q)); //Ask for answer from p1
+                    String p1Answer = (String) ((Pack) currentPlayer.receiveFromClient()).object();
+
+                    currentPlayer = currentPlayer.getOpponent(); //Switch to other participant
+
+                    currentPlayer.getOpponent().sendToClient(new Pack(States.WAIT, "Waiting for opponent"));
+                    currentPlayer.sendToClient(new Pack(States.SEND_ANSWER, q)); //Ask for answer from p2
+                    String p2Answer = (String) ((Pack) currentPlayer.receiveFromClient()).object();
+
+                    //Update scores
+                    if (isCorrectAnswer(q, p1Answer)) {
+                        p1.incrementPoint();
+                    }
+                    if (isCorrectAnswer(q, p2Answer)) {
+                        p2.incrementPoint();
+                    }
+
+                    //Tell players to update views
+                    ScoreboardDTO scoreboardDTOp1 = new ScoreboardDTO(p1.getPoint(), p2.getPoint());
+                    ScoreboardDTO scoreboardDTOp2 = new ScoreboardDTO(p2.getPoint(), p1.getPoint());
+                    p1.sendToClient(new Pack(States.SCOREBOARD_DTO, scoreboardDTOp1));
+                    p2.sendToClient(new Pack(States.SCOREBOARD_DTO, scoreboardDTOp2));
+
+                    status = SECOND_STEP;
                     break;
                 default:
                     break;
             }
-            //objectFromClient = currentPlayer.receiveFromClient();
-            //currentPlayer = currentPlayer.getOpponent();
-            //currentPlayer.receiveFromClient();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
+    public boolean isCorrectAnswer(Question q, String s) {
+        return q.getCorrectAnswer().equals(s);
+    }
 }

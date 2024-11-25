@@ -1,4 +1,4 @@
-package serverSide;
+package shared;
 
 import enums.ESubject;
 
