@@ -36,4 +36,11 @@ public class QuestionRepository implements Repository<Question> {
     public void save(Question question) {
         sm.write(question);
     }
+
+    public List<Question> threebySubject(ESubject subject) {
+        Predicate<Question> p = q -> q.getSubject().equals(subject);
+        List<Question> questions = findAll(p);
+        return new ArrayList<>(questions.subList(0, 3));
+
+    }
 }
