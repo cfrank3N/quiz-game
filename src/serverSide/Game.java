@@ -11,11 +11,10 @@ import shared.ScoreboardDTO;
 import shared.User;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 import static enums.GameState.*;
+
 
 public class Game extends Thread {
     private final Player p1;
@@ -24,10 +23,12 @@ public class Game extends Thread {
     private final QuestionRepository db = new QuestionRepository();
     private GameState status = SETUP;
 
+
     public Game(Player p1, Player p2) {
         this.p1 = p1;
         this.p2 = p2;
-        currentPlayer = p1;
+        this.currentPlayer = p1;
+
     }
 
     public void run() {
@@ -57,11 +58,13 @@ public class Game extends Thread {
                     //Retrieve p1 user and send player dto to p2
                     currentPlayer.sendToClient(new Pack(States.SEND_USER, null));
                     User user = (User) ((Pack) currentPlayer.receiveFromClient()).object();
+                    currentPlayer.setUser(user);
 
                     currentPlayer.getOpponent().sendToClient(new Pack(States.PLAYER_DTO, new PlayerDTO(user.getUsername(), user.getAvatarPath())));
                     //Retrieve p2 user and send player dto to p1
                     currentPlayer.getOpponent().sendToClient(new Pack(States.SEND_USER, null));
                     user = (User) ((Pack) currentPlayer.getOpponent().receiveFromClient()).object();
+                    currentPlayer.getOpponent().setUser(user);
 
                     currentPlayer.sendToClient(new Pack(States.PLAYER_DTO, new PlayerDTO(user.getUsername(), user.getAvatarPath())));
 
@@ -95,17 +98,49 @@ public class Game extends Thread {
                             }
                         }
 
+                        String scoreUpdate = "Current scores: " +
+                                currentPlayer.getUser().getUsername() + " (" + currentPlayer.getPoint() + ") - " +
+                                currentPlayer.getOpponent().getUser().getUsername() + " (" + currentPlayer.getOpponent().getPoint() + ")";
+                        currentPlayer.sendToClient(new Pack(States.WAIT, scoreUpdate));
+                        currentPlayer.getOpponent().sendToClient(new Pack(States.WAIT, scoreUpdate));
+
+                        status = SECOND_STEP;
+                        break;
+
+
                         //Tell players to update views
-                        ScoreboardDTO scoreboardDTOp1 = new ScoreboardDTO(currentPlayer.getPoint(), currentPlayer.getOpponent().getPoint());
-                        ScoreboardDTO scoreboardDTOp2 = new ScoreboardDTO(currentPlayer.getOpponent().getPoint(), currentPlayer.getPoint());
-                        currentPlayer.sendToClient(new Pack(States.SCOREBOARD_DTO, scoreboardDTOp1));
-                        currentPlayer.getOpponent().sendToClient(new Pack(States.SCOREBOARD_DTO, scoreboardDTOp2));
+                        //ScoreboardDTO scoreboardDTOp1 = new ScoreboardDTO(currentPlayer.getPoint(), currentPlayer.getOpponent().getPoint());
+                        //ScoreboardDTO scoreboardDTOp2 = new ScoreboardDTO(currentPlayer.getOpponent().getPoint(), currentPlayer.getPoint());
+                        //currentPlayer.sendToClient(new Pack(States.SCOREBOARD_DTO, scoreboardDTOp1));
+                        //currentPlayer.getOpponent().sendToClient(new Pack(States.SCOREBOARD_DTO, scoreboardDTOp2));
+
 
                     }
-                    status = SECOND_STEP;
+
                     break;
-                default:
+                case SECOND_STEP:
+                    int p1Points = p1.getPoint();
+                    int p2Points = p2.getPoint();
+                    String winnerMessage;
+                    if (p1Points > p2Points) {
+                        winnerMessage = "Player 1 ("+ p1.getUser().getUsername()+ ") wins with " + p1Points + " points!";
+                    } else if (p2Points > p1Points) {
+                        winnerMessage = "Player 2 (" + p2.getUser().getUsername()+ ") wins with " + p2Points + " points!";
+                    } else {
+                        winnerMessage = "Its a tie! Both players have " + p1Points + " point!";
+                    }
+
+                    p1.sendToClient(new Pack(States.WAIT, winnerMessage));
+                    p2.sendToClient(new Pack(States.WAIT, winnerMessage));
+
+                    status = FINISHED;
                     break;
+                case FINISHED:
+                    String endMessage = "The game has ended. Thank you for playing!";
+                    p1.sendToClient(new Pack(States.WAIT, endMessage));
+                    p2.sendToClient(new Pack(States.WAIT, endMessage));
+                    break;
+
             }
         } catch (Exception e) {
             throw new RuntimeException(e);

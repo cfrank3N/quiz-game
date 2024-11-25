@@ -3,5 +3,5 @@ package enums;
 public enum GameState {
     SETUP,
     FIRST_STEP,
-    SECOND_STEP
+    THIRD_STEP, FINISHED, SECOND_STEP
 }
