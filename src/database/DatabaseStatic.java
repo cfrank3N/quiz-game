@@ -12,21 +12,35 @@ public class DatabaseStatic {
     static List<Question> questions = new ArrayList<>();
 
     static {
-        questions.add(new Question("Choice A", "Choice B", "Choice C", "Choice D", ESubject.SUBJECT1, "What is 2 + 2?"));
-        questions.add(new Question("Mercury", "Venus", "Mars", "Earth", ESubject.SUBJECT2, "Which planet is third from the sun?"));
-        questions.add(new Question("Oxygen", "Carbon", "Nitrogen", "Hydrogen", ESubject.SUBJECT3, "What is the most abundant gas in Earth's atmosphere?"));
-        questions.add(new Question("5", "6", "7", "8", ESubject.SUBJECT1, "What is 4 + 4?"));
-        questions.add(new Question("France", "Germany", "Italy", "Spain", ESubject.SUBJECT4, "Which country is famous for the Eiffel Tower?"));
-        questions.add(new Question("Dog", "Cat", "Bird", "Fish", ESubject.SUBJECT5, "Which animal is known as man's best friend?"));
-        questions.add(new Question("Asia", "Europe", "Africa", "Australia", ESubject.SUBJECT2, "Which continent is the largest by area?"));
-        questions.add(new Question("1990", "1995", "2000", "2005", ESubject.SUBJECT1, "In which year did the 21st century begin?"));
-        questions.add(new Question("Triangle", "Square", "Circle", "Rectangle", ESubject.SUBJECT3, "Which shape has three sides?"));
-        questions.add(new Question("Apple", "Banana", "Orange", "Strawberry", ESubject.SUBJECT2, "Which fruit is known for its red color and seeds on the outside?"));
-        questions.add(new Question("Red", "Blue", "Yellow", "Green", ESubject.SUBJECT4, "What are the primary colors?"));
-        questions.add(new Question("Copper", "Gold", "Iron", "Silver", ESubject.SUBJECT1, "Which metal is the most conductive?"));
-        questions.add(new Question("Jupiter", "Saturn", "Uranus", "Neptune", ESubject.SUBJECT2, "Which planet has the most moons?"));
-        questions.add(new Question("5", "15", "25", "50", ESubject.SUBJECT1, "What is 5 times 5?"));
-        questions.add(new Question("H2O", "CO2", "O2", "N2", ESubject.SUBJECT3, "What is the chemical formula for water?"));
+// Mathematics
+        questions.add(new Question("5", "15", "25", "25", ESubject.MATHEMATICS, "What is 5 times 5?"));
+        questions.add(new Question("8", "16", "12", "16", ESubject.MATHEMATICS, "What is 4 times 4?"));
+        questions.add(new Question("36", "18", "27", "36", ESubject.MATHEMATICS, "What is 6 times 6?"));
+
+// Science
+        questions.add(new Question("Newton", "Einstein", "Tesla", "Newton", ESubject.SCIENCE, "Who formulated the laws of motion?"));
+        questions.add(new Question("Sun", "Mars", "Earth", "Sun", ESubject.SCIENCE, "Which celestial body is at the center of our solar system?"));
+        questions.add(new Question("Oxygen", "Carbon", "Water", "Water", ESubject.SCIENCE, "What is the main component of H2O?"));
+
+// History
+        questions.add(new Question("1776", "1492", "1066", "1776", ESubject.HISTORY, "In what year was the Declaration of Independence signed?"));
+        questions.add(new Question("George Washington", "Abraham Lincoln", "Thomas Jefferson", "George Washington", ESubject.HISTORY, "Who was the first President of the United States?"));
+        questions.add(new Question("The Great Depression", "World War I", "The Renaissance", "The Great Depression", ESubject.HISTORY, "What major event occurred in 1929?"));
+
+// Literature
+        questions.add(new Question("Shakespeare", "Dickens", "Hemingway", "Shakespeare", ESubject.LITERATURE, "Who wrote 'Romeo and Juliet'?"));
+        questions.add(new Question("1984", "Brave New World", "The Great Gatsby", "1984", ESubject.LITERATURE, "Which novel was written by George Orwell?"));
+        questions.add(new Question("Homer", "Virgil", "Sophocles", "Homer", ESubject.LITERATURE, "Who authored 'The Iliad'?"));
+
+// Geography
+        questions.add(new Question("Asia", "Africa", "Europe", "Asia", ESubject.GEOGRAPHY, "Which is the largest continent by land area?"));
+        questions.add(new Question("Amazon", "Nile", "Yangtze", "Nile", ESubject.GEOGRAPHY, "What is the longest river in the world?"));
+        questions.add(new Question("Australia", "Greenland", "Iceland", "Greenland", ESubject.GEOGRAPHY, "Which is the largest island in the world?"));
+
+// Sports
+        questions.add(new Question("Football", "Tennis", "Cricket", "Cricket", ESubject.SPORTS, "Which sport uses a bat, ball, and wickets?"));
+        questions.add(new Question("Michael Phelps", "Usain Bolt", "Roger Federer", "Usain Bolt", ESubject.SPORTS, "Who is the fastest sprinter in the world?"));
+        questions.add(new Question("Soccer", "Baseball", "Hockey", "Soccer", ESubject.SPORTS, "Which sport is known as 'the beautiful game'?"));
     }
 
     public Question oneBySubject(ESubject subject) {
