@@ -134,7 +134,7 @@ public class GameLook extends JFrame implements ActionListener {
 
         gameFrame.setVisible(true);
     }
-
+// skapa frame för frågorna och för är waiting player väntar
     public void setPlayerName() {
         String newUserName = JOptionPane.showInputDialog("What is your username?");
         userName.setText(newUserName);
