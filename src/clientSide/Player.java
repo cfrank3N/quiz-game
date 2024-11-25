@@ -6,18 +6,13 @@ import java.awt.*;
 public class Player {
     private int points;
     private String name;
-//    private ImageIcon avatar;
+    private ImageIcon avatar;
 
-    public Player(int points, String name) {
+    public Player(int points, String name, ImageIcon avatar) {
         this.points = points;
         this.name = name;
+        this.avatar = avatar;
     }
-
-//    public Player(int points, String name, ImageIcon avatar) {
-//        this.points = points;
-//        this.name = name;
-//        this.avatar = avatar;
-//    }
 
     public void setPoints(int points) {
         this.points = points;
@@ -35,11 +30,11 @@ public class Player {
         this.name = name;
     }
 
-//    public ImageIcon getAvatar() {
-//        return avatar;
-//    }
-//
-//    public void setAvatar(ImageIcon avatar) {
-//        this.avatar = avatar;
-//    }
+    public ImageIcon getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(ImageIcon avatar) {
+        this.avatar = avatar;
+    }
 }
