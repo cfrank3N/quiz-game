@@ -95,10 +95,6 @@ public class Game extends Thread {
                             }
                         }
 
-
-                        //Update scores
-
-
                         //Tell players to update views
                         ScoreboardDTO scoreboardDTOp1 = new ScoreboardDTO(currentPlayer.getPoint(), currentPlayer.getOpponent().getPoint());
                         ScoreboardDTO scoreboardDTOp2 = new ScoreboardDTO(currentPlayer.getOpponent().getPoint(), currentPlayer.getPoint());
@@ -108,8 +104,6 @@ public class Game extends Thread {
                     }
                     status = SECOND_STEP;
                     break;
-                case SECOND_STEP:
-
                 default:
                     break;
             }
@@ -121,8 +115,6 @@ public class Game extends Thread {
     public boolean isCorrectAnswer(Question q, String s) {
         return q.getCorrectAnswer().equalsIgnoreCase(s);
     }
-
-    public boolean determineWinner()
 
     public List<ESubject> generateCategory(){
 
