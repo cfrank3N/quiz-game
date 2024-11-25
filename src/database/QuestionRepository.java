@@ -40,6 +40,7 @@ public class QuestionRepository implements Repository<Question> {
     public List<Question> threebySubject(ESubject subject) {
         Predicate<Question> p = q -> q.getSubject().equals(subject);
         List<Question> questions = findAll(p);
+        Collections.shuffle(questions); // Added shuffle in the questions.
         return new ArrayList<>(questions.subList(0, 3));
 
     }
