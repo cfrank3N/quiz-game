@@ -42,9 +42,15 @@ public class Game extends Thread {
             p1.setOpponent(p2);
             p2.setOpponent(p1);
 
-            while (true) {
+            while (status != FINISHED) {
                 determineAction();
             }
+
+            String endMessage = "The game has ended. Thank you for playing!";
+            p1.sendToClient(new Pack(States.WAIT, endMessage));
+            p2.sendToClient(new Pack(States.WAIT, endMessage));
+
+
 
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -133,12 +139,9 @@ public class Game extends Thread {
                     p1.sendToClient(new Pack(States.WAIT, winnerMessage));
                     p2.sendToClient(new Pack(States.WAIT, winnerMessage));
 
-                    status = FINISHED;
+                    status = GameState.FINISHED;
                     break;
                 case FINISHED:
-                    String endMessage = "The game has ended. Thank you for playing!";
-                    p1.sendToClient(new Pack(States.WAIT, endMessage));
-                    p2.sendToClient(new Pack(States.WAIT, endMessage));
                     break;
 
             }
