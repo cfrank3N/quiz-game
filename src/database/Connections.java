@@ -1,7 +1,7 @@
 package database;
 
-import serverSide.Question;
-import serverSide.User;
+import shared.Question;
+import shared.User;
 
 public class Connections {
     public static SerializationManager<Question> questionSerializationManager = new SerializationManager<>("src/database/questions_temp.ser", "src/database/questions.ser", "questions.ser");

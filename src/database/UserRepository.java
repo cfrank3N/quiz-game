@@ -1,6 +1,6 @@
 package database;
 
-import serverSide.User;
+import shared.User;
 
 import java.util.ArrayList;
 import java.util.Collections;

@@ -1,4 +1,4 @@
-package serverSide;
+package shared;
 
 import javax.swing.*;
 import java.io.Serializable;
@@ -6,14 +6,14 @@ import java.io.Serializable;
 public class User implements Serializable {
     private String username, name, email;
     private int age;
-    private ImageIcon avatar;
+    private String avatarPath;
 
-    public User(String username, String name, String email, int age, ImageIcon avatar) {
+    public User(String username, String name, String email, int age, String avatarPath) {
         this.username = username;
         this.name = name;
         this.email = email;
         this.age = age;
-        this.avatar = avatar;
+        this.avatarPath = avatarPath;
     }
 
     public String getName() {
@@ -48,12 +48,12 @@ public class User implements Serializable {
         this.username = username;
     }
 
-    public ImageIcon getAvatar() {
-        return avatar;
+    public String getAvatarPath() {
+        return avatarPath;
     }
 
-    public void setAvatar(ImageIcon avatar) {
-        this.avatar = avatar;
+    public void setAvatarPath(String avatarPath) {
+        this.avatarPath = avatarPath;
     }
 
     @Override

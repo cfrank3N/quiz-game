@@ -1,4 +1,6 @@
-package serverSide;
+package shared;
 
-public record ScoreboardDTO(int you, int opponent) {
+import java.io.Serializable;
+
+public record ScoreboardDTO(int you, int opponent) implements Serializable {
 }

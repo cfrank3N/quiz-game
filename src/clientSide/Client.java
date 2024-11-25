@@ -1,18 +1,26 @@
 package clientSide;
 
+import enums.ESubject;
+import enums.States;
 import packettosend.Pack;
-import serverSide.Question;
+import shared.Question;
+import shared.PlayerDTO;
+import shared.ScoreboardDTO;
+import shared.User;
 
+import javax.swing.*;
 import java.io.*;
 import java.net.Socket;
 
 import java.util.Scanner;
 
 public class Client {
+    private Board board;
+    private User user;
 
     public void startClient() {
-
-        Scanner input = new Scanner(System.in); //Defines a Scanner to print messages to server. Will delete this later.
+        //Login
+        user = new User("Guest", "", "", 0, "src/avatars/basic_boy.png");
 
         //Initializes input and outputstreams
         try (Socket socket = new Socket("127.0.0.1", 12345);
@@ -22,12 +30,9 @@ public class Client {
 
             Object messageFromServer;
 
-            System.out.println(in.readObject()); //Prints welcome message from server
-
             while (true) {
                 messageFromServer = in.readObject();
-                determineAction(messageFromServer);
-                out.writeObject("Question Answered");
+                determineAction(messageFromServer, out);
             }
 
         } catch (IOException | ClassNotFoundException e) {
@@ -35,18 +40,51 @@ public class Client {
         }
     }
 
-    public void determineAction(Object fromServer) {
+    public void determineAction(Object fromServer, ObjectOutputStream out) throws IOException {
         Pack packFromServer = (Pack) fromServer;
-        Scanner input = new Scanner(System.in);
+        Scanner scan = new Scanner(System.in);
         switch (packFromServer.header()) {
+            case WELCOME:
+                System.out.println("Welcome to the game.");
+                break;
+            case SEND_USER:
+                out.writeObject(new Pack(States.PLAYER_DTO, user));
+                break;
+            case PLAYER_DTO:
+                PlayerDTO opponentInformation = (PlayerDTO) packFromServer.object();
+
+                Player me = new Player(0, user.getUsername());
+                Player opponent = new Player(0, opponentInformation.name());
+
+                board = new Board(me, opponent);
+                break;
+
+            case CHOOSE_CATEGORY:
+                out.writeObject(new Pack(States.CATEGORY, ESubject.SUBJECT1));
+                break;
             case WAIT:
                 System.out.println(packFromServer.object());
                 break;
-            case QUESTION:
+            case SEND_ANSWER:
+                System.out.println("Your turn");
                 Question question = (Question) packFromServer.object();
                 System.out.println(question.getQuestion());
                 System.out.println(question.getSubjectQuestions());
+                System.out.print("Answer: ");
+                String input = scan.nextLine();
+                System.out.println();
+                out.writeObject(new Pack(States.GUESS, input));
                 break;
+            case SCOREBOARD_DTO:
+                //Update
+                ScoreboardDTO scoreboardDTO = (ScoreboardDTO) packFromServer.object();
+                board.getMe().setPoints(scoreboardDTO.you());
+                board.getOpponent().setPoints(scoreboardDTO.opponent());
+
+                //View
+                System.out.println("Current score: ");
+                System.out.println("You: " + board.getMe().getPoints());
+                System.out.println("Opponent: " + board.getOpponent().getPoints());
             default:
                 break;
         }
