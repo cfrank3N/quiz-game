@@ -6,9 +6,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class GameLook extends JFrame implements ActionListener {
-    //JFrame for the game
+    private final int frameWidth = 500, frameHeight = 800;
+
+    //JFrame for choosing subject
     JFrame gameFrame = new JFrame();
-    JPanel firstPanel = new JPanel();
+    JPanel firstPanel = new BackgroundPanel("src/serverSide/image/QuizBackground.jpg");
     JPanel buttonPanel = new JPanel();
     JPanel categoryPanel = new JPanel();
     JLabel chooseCategory = new JLabel("Choose your category");
@@ -16,11 +18,22 @@ public class GameLook extends JFrame implements ActionListener {
     JButton subject2 = new JButton("Subject 2");
     JButton subject3 = new JButton("Subject 3");
     JButton subject4 = new JButton("subject 4");
-    JButton emtybutton = new JButton("");
+    JButton emptyButton = new JButton("");
 
+    //JFrame for the rounds
+    JFrame roundFrame = new JFrame();
+    JPanel mainPanel = new BackgroundPanel("src/serverSide/image/QuizBackground.jpg");
+    JPanel thePanelForButton = new JPanel();
+    JPanel questionPanel = new JPanel();
+    JLabel questionLabel = new JLabel("Choose your category");
+    JButton question1 = new JButton("Subject 1");
+    JButton question2 = new JButton("Subject 2");
+    JButton question3 = new JButton("Subject 3");
+    JButton question4 = new JButton("subject 4");
+    //JButton theEmptyButton = new JButton("");
 
     //JFrame for the "lobby"
-    JPanel headPanel = new JPanel();
+    JPanel headPanel = new BackgroundPanel("src/serverSide/image/QuizBackground.jpg");
     JButton newGame = new JButton("NewGame");
     JPanel northPanel = new JPanel();
     JPanel panel2 = new JPanel();
@@ -40,7 +53,7 @@ public class GameLook extends JFrame implements ActionListener {
         // Konfigurera huvudfönstret
         setTitle("Quizkampen");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(500, 800);
+        setSize(frameWidth, frameHeight);
         setLocationRelativeTo(null);
 
         // Layouts och grundfärger
@@ -48,10 +61,6 @@ public class GameLook extends JFrame implements ActionListener {
         northPanel.setLayout(new BorderLayout());
         panel2.setLayout(new FlowLayout());
         inNorthPanelSouth.setLayout(new BoxLayout(inNorthPanelSouth, BoxLayout.Y_AXIS));
-        panel2.setBackground(Color.CYAN);
-        inNorthPanelCenter.setBackground(Color.CYAN);
-        inNorthPanelSouth.setBackground(Color.CYAN);
-        headPanel.setBackground(Color.CYAN);
 
 
         // Anpassa komponenter
@@ -62,6 +71,10 @@ public class GameLook extends JFrame implements ActionListener {
         newGame.setFont(new Font("Arial", Font.BOLD, 16));
         userName.setAlignmentX(Component.CENTER_ALIGNMENT);
         waitingPlayer.setAlignmentX(Component.CENTER_ALIGNMENT);
+        panel2.setOpaque(false);
+        inNorthPanelSouth.setOpaque(false);
+        northPanel.setOpaque(false);
+        inNorthPanelCenter.setOpaque(false);
 
         // Lägg till komponenter
         panel2.add(newGame);
@@ -87,46 +100,44 @@ public class GameLook extends JFrame implements ActionListener {
         new GameLook();
     }
 
+
     public void GameStart() {
-        //gör den första Frame osynlig
+        //Gör den första Frame osynlig
         this.setVisible(false);
 
         //Startar en ny frame för spelet.
-        gameFrame.setSize(500, 650);
+        gameFrame.setSize(frameWidth, frameHeight);
         gameFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         gameFrame.setTitle("the quiz game");
         gameFrame.setLocationRelativeTo(null);
-
+        //Panels layout
         firstPanel.setLayout(new BorderLayout());
         buttonPanel.setLayout(new FlowLayout());
         categoryPanel.setLayout(new BorderLayout());
 
+        //Tilläggning av komponenter
         gameFrame.add(firstPanel);
         firstPanel.add(buttonPanel, BorderLayout.CENTER);
         firstPanel.add(categoryPanel, BorderLayout.NORTH);
-
         categoryPanel.add(chooseCategory, BorderLayout.CENTER);
-        buttonPanel.add(emtybutton);
+        buttonPanel.add(emptyButton);
 
         buttonPanel.add(subject1);
         buttonPanel.add(subject2);
         buttonPanel.add(subject3);
         buttonPanel.add(subject4);
 
-
-        emtybutton.setContentAreaFilled(false);
-        emtybutton.setBorderPainted(false);
-
-
-        buttonPanel.setBackground(Color.CYAN);
-        categoryPanel.setBackground(Color.red);
+        //Anpassning av komponenter och utseende
+        emptyButton.setContentAreaFilled(false);
+        emptyButton.setBorderPainted(false);
         categoryPanel.setPreferredSize(new Dimension(500, 200));
-        chooseCategory.setFont(new Font("Arial", Font.BOLD, 16));
+        chooseCategory.setFont(new Font("Arial", Font.BOLD, 30));
         chooseCategory.setHorizontalAlignment(SwingConstants.CENTER);
         chooseCategory.setVerticalAlignment(SwingConstants.CENTER);
+        categoryPanel.setOpaque(false);
+        buttonPanel.setOpaque(false);
 
-
-        emtybutton.setPreferredSize(new Dimension(500, 50));
+        emptyButton.setPreferredSize(new Dimension(500, 50));
         subject1.setPreferredSize(new Dimension(225, 150));
         subject2.setPreferredSize(new Dimension(225, 150));
         subject3.setPreferredSize(new Dimension(225, 150));
@@ -134,7 +145,23 @@ public class GameLook extends JFrame implements ActionListener {
 
         gameFrame.setVisible(true);
     }
-// skapa frame för frågorna och för är waiting player väntar
+
+    public void RoundStart() {
+        //Gör den tidigare JFrame osynlig
+        gameFrame.setVisible(false);
+
+        // Setting the roundFrame
+        roundFrame.setTitle("Quizkampen");
+        roundFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        roundFrame.setSize(frameWidth, frameHeight);
+        roundFrame.setLocationRelativeTo(null);
+
+
+
+
+    }
+
+    // skapa frame för frågorna och för är waiting player väntar
     public void setPlayerName() {
         String newUserName = JOptionPane.showInputDialog("What is your username?");
         userName.setText(newUserName);
