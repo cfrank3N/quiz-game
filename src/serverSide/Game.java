@@ -10,6 +10,10 @@ import shared.Question;
 import shared.ScoreboardDTO;
 import shared.User;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import static enums.ESubject.SUBJECT3;
 import static enums.GameState.*;
 
@@ -65,7 +69,7 @@ public class Game extends Thread {
                     break;
                 case FIRST_STEP:
                     currentPlayer.getOpponent().sendToClient(new Pack(States.WAIT, "Waiting for opponent"));
-                    currentPlayer.sendToClient(new Pack(States.CHOOSE_CATEGORY, null));
+                    currentPlayer.sendToClient(new Pack(States.CHOOSE_CATEGORY, generateCategory()));
                     ESubject subject = (ESubject) (((Pack) currentPlayer.receiveFromClient()).object()); //Wait for subject
 
                     Question q = db.oneBySubject(subject); //Pick a question
@@ -105,5 +109,16 @@ public class Game extends Thread {
 
     public boolean isCorrectAnswer(Question q, String s) {
         return q.getCorrectAnswer().equals(s);
+    }
+
+    public List<ESubject> generateCategory(){
+
+        List<ESubject>categories=new ArrayList<>(List.of(ESubject.values()));
+
+        Collections.shuffle(categories);
+
+        List<ESubject>chosen=new ArrayList<>(categories.subList(0, 3));
+
+        return chosen;
     }
 }

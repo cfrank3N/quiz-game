@@ -12,6 +12,7 @@ import javax.swing.*;
 import java.io.*;
 import java.net.Socket;
 
+import java.util.List;
 import java.util.Scanner;
 
 public class Client {
@@ -60,7 +61,15 @@ public class Client {
                 break;
 
             case CHOOSE_CATEGORY:
-                out.writeObject(new Pack(States.CATEGORY, ESubject.SUBJECT1));
+                List<ESubject> catagories = (List<ESubject>)packFromServer.object();
+                System.out.println(catagories);
+                String chosenSubject = scan.nextLine();
+                for (ESubject s : catagories) {
+                    if (chosenSubject.equalsIgnoreCase(s.getNameText())) {
+                        out.writeObject(new Pack(States.CATEGORY, s));
+                    }
+                }
+
                 break;
             case WAIT:
                 System.out.println(packFromServer.object());
