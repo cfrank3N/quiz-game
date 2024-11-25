@@ -110,8 +110,10 @@ public class Game extends Thread {
             String answer = (String) ((Pack) currentPlayer.receiveFromClient()).object();
             if (isCorrectAnswer(q, answer)) {
                 currentPlayer.incrementPoint();
+                currentPlayer.sendToClient(new Pack(States.SEND_CORRECT_ANSWER, "Correct"));
+            } else {
+                currentPlayer.sendToClient(new Pack(States.SEND_CORRECT_ANSWER, "Incorrect"));
             }
-
         }
     }
 
