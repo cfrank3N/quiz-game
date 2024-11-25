@@ -71,24 +71,31 @@ public class Game extends Thread {
                     currentPlayer.sendToClient(new Pack(States.CHOOSE_CATEGORY, generateCategory()));
                     ESubject subject = (ESubject) (((Pack) currentPlayer.receiveFromClient()).object()); //Wait for subject
 
-                    Question q = db.oneBySubject(subject); //Pick a question
+                    List<Question> currentQuestions = db.threebySubject(subject); //Pick a question
 
-                    currentPlayer.sendToClient(new Pack(States.SEND_ANSWER, q)); //Ask for answer from p1
-                    String p1Answer = (String) ((Pack) currentPlayer.receiveFromClient()).object();
+                    for (Question q: currentQuestions) {
 
-                    currentPlayer = currentPlayer.getOpponent(); //Switch to other participant
+                        currentPlayer.sendToClient(new Pack(States.SEND_ANSWER, q )); //Ask for answer from p1
+                        String p1Answer = (String) ((Pack) currentPlayer.receiveFromClient()).object();
+                        if (isCorrectAnswer(q, p1Answer)) {
+                            currentPlayer.incrementPoint();
+                        }
 
-                    currentPlayer.getOpponent().sendToClient(new Pack(States.WAIT, "Waiting for opponent"));
-                    currentPlayer.sendToClient(new Pack(States.SEND_ANSWER, q)); //Ask for answer from p2
-                    String p2Answer = (String) ((Pack) currentPlayer.receiveFromClient()).object();
+                    }
+                    currentPlayer.sendToClient(new Pack(States.WAIT, "Waiting for opponent"));
+
+                    currentPlayer = currentPlayer.getOpponent();//Switch to other participant
+                    for (Question q: currentQuestions) {
+                        currentPlayer.sendToClient(new Pack(States.SEND_ANSWER, q )); //Ask for answer from p1
+                        String p2Answer = (String) ((Pack) currentPlayer.receiveFromClient()).object();
+                        if (isCorrectAnswer(q, p2Answer)) {
+                            currentPlayer.incrementPoint();
+                        }
+                    }
+
 
                     //Update scores
-                    if (isCorrectAnswer(q, p1Answer)) {
-                        p1.incrementPoint();
-                    }
-                    if (isCorrectAnswer(q, p2Answer)) {
-                        p2.incrementPoint();
-                    }
+
 
                     //Tell players to update views
                     ScoreboardDTO scoreboardDTOp1 = new ScoreboardDTO(p1.getPoint(), p2.getPoint());
@@ -107,7 +114,7 @@ public class Game extends Thread {
     }
 
     public boolean isCorrectAnswer(Question q, String s) {
-        return q.getCorrectAnswer().equals(s);
+        return q.getCorrectAnswer().equalsIgnoreCase(s);
     }
 
     public List<ESubject> generateCategory(){
