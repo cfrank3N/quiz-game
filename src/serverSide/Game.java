@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static enums.ESubject.SUBJECT3;
 import static enums.GameState.*;
 
 public class Game extends Thread {
