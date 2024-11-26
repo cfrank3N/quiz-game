@@ -87,6 +87,7 @@ public class Game extends Thread {
                         loopQAndA(currentQuestions);
                         currentPlayer.sendToClient(new Pack(States.WAIT, "Waiting for opponent"));
                         currentPlayer = currentPlayer.getOpponent();//Switch to other participant
+                        System.out.println("switched player");
                         loopQAndA(currentQuestions);
 
                         String scoreUpdate = "Current scores: " +
@@ -142,8 +143,9 @@ public class Game extends Thread {
 
     public void loopQAndA(List <Question> questions) throws IOException, ClassNotFoundException {
         for (Question q : questions) {
-
+            System.out.println("Inside q loop");
             currentPlayer.sendToClient(new Pack(States.SEND_ANSWER, q)); //Ask for answer from p1
+            System.out.println("Send question");
             String answer = (String) ((Pack) currentPlayer.receiveFromClient()).object();
             if (isCorrectAnswer(q, answer)) {
                 currentPlayer.incrementPoint();

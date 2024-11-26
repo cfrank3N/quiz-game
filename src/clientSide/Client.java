@@ -27,9 +27,9 @@ public class Client {
     private JPanel panel = new JPanel();
 
     public void startClient() {
-        String newUserName = JOptionPane.showInputDialog("What is your username?");
-        user = new User(newUserName, "", "", 0, "src/avatars/basic_boy.png");
-        frame = new JFrame();
+//        String newUserName = JOptionPane.showInputDialog("What is your username?");
+        user = new User("newUserName", "", "", 0, "src/avatars/basic_boy.png");
+//        frame = new JFrame();
         buttons = new ArrayList<>(List.of(new JButton(""), new JButton(""), new JButton(""), new JButton("")));
 
         //Initializes input and outputstreams
@@ -56,7 +56,7 @@ public class Client {
         switch (packFromServer.header()) {
             case WELCOME:
                 System.out.println("Welcome to the game.");
-//                getWelcomeFrame();
+                getWelcomeFrame();
                 break;
             case SEND_USER:
                 out.writeObject(new Pack(States.PLAYER_DTO, user));
@@ -92,7 +92,7 @@ public class Client {
                 break;
             case WAIT:
                 System.out.println(packFromServer.object());
-//                getWelcomeFrame();
+                getWaitFrame();
                 break;
 
             case SEND_CORRECT_ANSWER:
@@ -130,7 +130,18 @@ public class Client {
         }
     }
 
+    public void getWaitFrame() {
+//        frame.removeAll();
+
+        panel.removeAll();
+        panel.add(new JLabel("Waiting"));
+
+        panel.revalidate();
+        panel.repaint();
+    }
+
     public void getWelcomeFrame() {
+        frame = new JFrame();
         frame.setSize(500,800);
 //        frame.setMaximumSize(new Dimension(frameWidth, frameHeight));
 //        frame.setMinimumSize(new Dimension(frameWidth, frameHeight));
@@ -139,6 +150,8 @@ public class Client {
         frame.setTitle("the quiz game");
         frame.setLocationRelativeTo(null);
         panel = new JPanel(new GridLayout(4,4));
+        frame.add(panel);
+        panel.add(new JLabel("Hello"));
 
         frame.setVisible(true);
     }
@@ -185,20 +198,21 @@ public class Client {
     }
 
     public void getCategoryFrame(List<ESubject> subjects, ObjectOutputStream out) {
-        //Startar en ny frame för spelet.
-        frame.setSize(500,800);
-//        frame.setMaximumSize(new Dimension(frameWidth, frameHeight));
-//        frame.setMinimumSize(new Dimension(frameWidth, frameHeight));
-        frame.setResizable(false);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setTitle("the quiz game");
-        frame.setLocationRelativeTo(null);
-        panel = new JPanel(new GridLayout(4,4));
+//        frame = new JFrame();
+//        //Startar en ny frame för spelet.
+//        frame.setSize(500,800);
+////        frame.setMaximumSize(new Dimension(frameWidth, frameHeight));
+////        frame.setMinimumSize(new Dimension(frameWidth, frameHeight));
+//        frame.setResizable(false);
+//        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//        frame.setTitle("the quiz game");
+//        frame.setLocationRelativeTo(null);
+//        panel = new JPanel(new GridLayout(4,4));
 
 //        if (panel != null) {
 //            panel.removeAll();
 //        }
-//        panel.removeAll();
+        panel.removeAll();
 
         int counter = 0;
         for (ESubject subject : subjects) {
@@ -224,10 +238,10 @@ public class Client {
             counter++;
         }
 
-//        panel.revalidate();
-//        panel.repaint();
-        frame.add(panel);
-        frame.setVisible(true);
+        panel.revalidate();
+        panel.repaint();
+//        frame.add(panel);
+//        frame.setVisible(true);
     }
 
     public static void main(String[] args) {
