@@ -14,10 +14,12 @@ public class Server {
      * And lastly it starts a game in a new thread.
      */
     public void startServer() {
+        AudioManager am = new AudioManager();
 
         try (ServerSocket serverSocket = new ServerSocket(12345)) {
 
             while (true) {
+
                 Socket socket1 = serverSocket.accept();
                 Player p1 = new Player(socket1);
                 System.out.println("Client one connected");
@@ -28,6 +30,8 @@ public class Server {
                 Game game = new Game(p1, p2);
                 game.start();
                 System.out.println("Server started");
+                am.playThemeSong();
+
 
             }
 
