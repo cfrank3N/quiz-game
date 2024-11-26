@@ -76,6 +76,7 @@ public class GameLook extends JFrame implements ActionListener {
     JLabel score6p1 = new JLabel("");
     JLabel score6p2 = new JLabel("");
     JLabel scorehypen6 = new JLabel("-");
+    JLabel categories = new JLabel("Categories"); //
     JButton continueButton = new JButton("Continue");
     private String playerName = " ";
     JLabel userName = new JLabel(playerName);
@@ -102,6 +103,7 @@ public class GameLook extends JFrame implements ActionListener {
         new GameLook();
     }
 
+    // används ej
     public void WaitingScreen() {
         waitingFrame.setTitle("hejsan");
         waitingFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
