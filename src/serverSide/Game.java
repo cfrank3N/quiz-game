@@ -84,25 +84,10 @@ public class Game extends Thread {
 
                         List<Question> currentQuestions = db.threebySubject(subject); //Pick a question
 
-                        for (Question q : currentQuestions) {
-
-                            currentPlayer.sendToClient(new Pack(States.SEND_ANSWER, q)); //Ask for answer from p1
-                            String p1Answer = (String) ((Pack) currentPlayer.receiveFromClient()).object();
-                            if (isCorrectAnswer(q, p1Answer)) {
-                                currentPlayer.incrementPoint();
-                            }
-
-                        }
+                        loopQAndA(currentQuestions);
                         currentPlayer.sendToClient(new Pack(States.WAIT, "Waiting for opponent"));
-
                         currentPlayer = currentPlayer.getOpponent();//Switch to other participant
-                        for (Question q : currentQuestions) {
-                            currentPlayer.sendToClient(new Pack(States.SEND_ANSWER, q)); //Ask for answer from p1
-                            String p2Answer = (String) ((Pack) currentPlayer.receiveFromClient()).object();
-                            if (isCorrectAnswer(q, p2Answer)) {
-                                currentPlayer.incrementPoint();
-                            }
-                        }
+                        loopQAndA(currentQuestions);
 
                         String scoreUpdate = "Current scores: " +
                                 currentPlayer.getUser().getUsername() + " (" + currentPlayer.getPoint() + ") - " +
@@ -124,6 +109,7 @@ public class Game extends Thread {
                     status = SECOND_STEP;
                     break;
                 case SECOND_STEP:
+
                     int p1Points = p1.getPoint();
                     int p2Points = p2.getPoint();
                     String winnerMessage;
@@ -141,6 +127,7 @@ public class Game extends Thread {
                     status = GameState.FINISHED;
                     break;
                 case FINISHED:
+
                     break;
 
             }
@@ -153,14 +140,26 @@ public class Game extends Thread {
         return q.getCorrectAnswer().equalsIgnoreCase(s);
     }
 
+    public void loopQAndA(List <Question> questions) throws IOException, ClassNotFoundException {
+        for (Question q : questions) {
+
+            currentPlayer.sendToClient(new Pack(States.SEND_ANSWER, q)); //Ask for answer from p1
+            String answer = (String) ((Pack) currentPlayer.receiveFromClient()).object();
+            if (isCorrectAnswer(q, answer)) {
+                currentPlayer.incrementPoint();
+                currentPlayer.sendToClient(new Pack(States.SEND_CORRECT_ANSWER, "Correct"));
+            } else {
+                currentPlayer.sendToClient(new Pack(States.SEND_CORRECT_ANSWER, "Incorrect"));
+            }
+        }
+    }
+
     public List<ESubject> generateCategory(){
 
         List<ESubject>categories=new ArrayList<>(List.of(ESubject.values()));
 
         Collections.shuffle(categories);
 
-        List<ESubject>chosen=new ArrayList<>(categories.subList(0, 3));
-
-        return chosen;
+        return new ArrayList<>(categories.subList(0, 3));
     }
 }

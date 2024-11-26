@@ -71,7 +71,7 @@ public class Client {
                 }
 
                 break;
-            case WAIT:
+            case WAIT, SEND_CORRECT_ANSWER:
                 System.out.println(packFromServer.object());
                 break;
             case SEND_ANSWER:
@@ -94,6 +94,7 @@ public class Client {
                 System.out.println("Current score: ");
                 System.out.println("You: " + board.getMe().getPoints());
                 System.out.println("Opponent: " + board.getOpponent().getPoints());
+                break;
             default:
                 break;
         }
