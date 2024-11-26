@@ -52,7 +52,6 @@ public class Client {
 
     public void determineAction(Object fromServer, ObjectOutputStream out) throws IOException {
         Pack packFromServer = (Pack) fromServer;
-        Scanner scan = new Scanner(System.in);
         switch (packFromServer.header()) {
             case WELCOME:
                 System.out.println("Welcome to the game.");
@@ -68,26 +67,11 @@ public class Client {
                 Player opponent = new Player(0, opponentInformation.name(), new ImageIcon(opponentInformation.avatarPath()));
 
                 board = new Board(me, opponent);
-
-
-//                getWelcomeFrame();
                 break;
 
             case CHOOSE_CATEGORY:
-                //Ta vår frame och måla den med rätt conent
-//                frame.add();
-//                paincategoryframe
-
                 List<ESubject> catagories = (List<ESubject>)packFromServer.object();
                 getCategoryFrame(catagories, out);
-
-//                System.out.println(catagories);
-//                String chosenSubject = scan.nextLine();
-//                for (ESubject s : catagories) {
-//                    if (chosenSubject.equalsIgnoreCase(s.getNameText())) {
-//                        out.writeObject(new Pack(States.CATEGORY, s));
-//                    }
-//                }
 
                 break;
             case WAIT:
@@ -101,18 +85,9 @@ public class Client {
 
 
             case SEND_ANSWER:
-                //access question frame thingy
                 Question question = (Question) packFromServer.object();
                 getQuestionFrame(question, out);
 
-//                System.out.println("Your turn");
-//                Question question = (Question) packFromServer.object();
-//                System.out.println(question.getQuestion());
-//                System.out.println(question.getSubjectQuestions());
-//                System.out.print("Answer: ");
-//                String input = scan.nextLine();
-//                System.out.println();
-//                out.writeObject(new Pack(States.GUESS, input));
                 break;
             case SCOREBOARD_DTO:
                 //Update
@@ -130,9 +105,9 @@ public class Client {
         }
     }
 
-    public void getWaitFrame() {
-//        frame.removeAll();
 
+
+    public void getWaitFrame() {
         panel.removeAll();
         panel.add(new JLabel("Waiting"));
 
@@ -143,8 +118,6 @@ public class Client {
     public void getWelcomeFrame() {
         frame = new JFrame();
         frame.setSize(500,800);
-//        frame.setMaximumSize(new Dimension(frameWidth, frameHeight));
-//        frame.setMinimumSize(new Dimension(frameWidth, frameHeight));
         frame.setResizable(false);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setTitle("the quiz game");
@@ -157,13 +130,6 @@ public class Client {
     }
 
     public void getQuestionFrame(Question question, ObjectOutputStream out) {
-        //Startar en ny frame för spelet.
-
-//        frame.setMaximumSize(new Dimension(frameWidth, frameHeight));
-//        frame.setMinimumSize(new Dimension(frameWidth, frameHeight));
-//        if (panel != null) {
-//            panel.removeAll();
-//        }
         panel.removeAll();
 
         for(JButton currentButton: buttons) { //Clean up previous action listeners
@@ -176,15 +142,34 @@ public class Client {
         for (String q : question.getSubjectQuestions()) {
             JButton b = buttons.get(counter);
             b.setText(q);
+            b.setOpaque(false);
+//            b.setBackground(Color.BLUE);
 
             panel.add(b);
 
             b.addActionListener(e -> {
                 JButton button = (JButton) e.getSource();
 
+                button.setBackground(Color.BLUE);
+
                 try {
+                    if (button.getText().equalsIgnoreCase(question.getCorrectAnswer())) {
+                        System.out.println("Right");
+                        button.setBackground(Color.GREEN);
+//                        button.setForeground(Color.GREEN);
+                    } else {
+                        System.out.println("sWrong");
+                        button.setBackground(Color.RED);
+//                        button.setForeground(Color.RED);
+                    }
+
+                    Thread.sleep(5000);
+                    button.setBackground(Color.LIGHT_GRAY);
+
                     out.writeObject(new Pack(States.GUESS, button.getText()));
                 } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                } catch (InterruptedException ex) {
                     throw new RuntimeException(ex);
                 }
             });
@@ -198,20 +183,6 @@ public class Client {
     }
 
     public void getCategoryFrame(List<ESubject> subjects, ObjectOutputStream out) {
-//        frame = new JFrame();
-//        //Startar en ny frame för spelet.
-//        frame.setSize(500,800);
-////        frame.setMaximumSize(new Dimension(frameWidth, frameHeight));
-////        frame.setMinimumSize(new Dimension(frameWidth, frameHeight));
-//        frame.setResizable(false);
-//        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//        frame.setTitle("the quiz game");
-//        frame.setLocationRelativeTo(null);
-//        panel = new JPanel(new GridLayout(4,4));
-
-//        if (panel != null) {
-//            panel.removeAll();
-//        }
         panel.removeAll();
 
         int counter = 0;
@@ -240,19 +211,10 @@ public class Client {
 
         panel.revalidate();
         panel.repaint();
-//        frame.add(panel);
-//        frame.setVisible(true);
     }
 
     public static void main(String[] args) {
         Client client = new Client();
-
-//        JFrame
-//        String newUserName = JOptionPane.showInputDialog("What is your username?");
-//        User user = new User(newUserName, "", "", 0, "src/avatars/basic_boy.png");
-//        JButton button = new JButton();
-//        button.addActionListener(e -> client.startClient());
-
         client.startClient();
     }
 }
