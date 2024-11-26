@@ -10,10 +10,10 @@ public class AudioManager {
     public AudioManager() {
         try {
             audioThemeSong = new Audio("quizThemeSong.wav", true);
-//            audioMoveSucc = new Audio("move_succ.wav", false);
-//            audioMoveFail = new Audio("move_fail.wav",false);
+            audioMoveSucc = new Audio("move_succ.wav", false);
+            audioMoveFail = new Audio("move_fail.wav",false);
 //            audioCleared = new Audio("audio_cleared.wav",false);
-            audioThemeSong.play();
+//            audioThemeSong.play();
 
         } catch (Exception e) {
             e.printStackTrace();

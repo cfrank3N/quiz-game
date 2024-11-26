@@ -3,6 +3,7 @@ package clientSide;
 import enums.ESubject;
 import enums.States;
 import packettosend.Pack;
+import serverSide.AudioManager;
 import serverSide.GameLook;
 import shared.Question;
 import shared.PlayerDTO;
@@ -27,6 +28,7 @@ public class Client {
     private JPanel panel = new JPanel();
     private JPanel panel2 = new JPanel();
     private JLabel questionText = new JLabel();
+    private final AudioManager am = new AudioManager();
 
     public void startClient() {
 //        String newUserName = JOptionPane.showInputDialog("What is your username?");
@@ -156,15 +158,25 @@ public class Client {
             // buttons.get(counter).setOpaque(false);
 //            buttons.get(counter).setBackground(Color.white);
 
+            // user clicks buttons
             b.addActionListener(e -> {
                 JButton button = (JButton) e.getSource();
                 button.setOpaque(true);
+
                 // Kontrollera svaret och ändra färg
                 boolean isCorrect = button.getText().equalsIgnoreCase(question.getCorrectAnswer());
                 button.setBackground(isCorrect ? Color.GREEN : Color.RED);
 
+                // plays sounds depending on right or wrong answer
+                if (isCorrect) {
+                    am.playAudioMoveSucc();
+                } else {
+                    am.playAudioMoveFail();
+                }
+
+
                 // Skicka resultatet efter en kort fördröjning
-                Timer timer = new Timer(1000, evt -> {
+                Timer timer = new Timer(700, evt -> {
                     try {
                         out.writeObject(new Pack(States.GUESS, button.getText()));
                     } catch (IOException ex) {
