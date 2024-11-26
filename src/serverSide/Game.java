@@ -110,8 +110,7 @@ public class Game extends Thread {
                         currentPlayer.sendToClient(new Pack(States.WAIT, scoreUpdate));
                         currentPlayer.getOpponent().sendToClient(new Pack(States.WAIT, scoreUpdate));
 
-                        status = SECOND_STEP;
-                        break;
+
 
 
                         //Tell players to update views
@@ -122,7 +121,7 @@ public class Game extends Thread {
 
 
                     }
-
+                    status = SECOND_STEP;
                     break;
                 case SECOND_STEP:
                     int p1Points = p1.getPoint();
