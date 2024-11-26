@@ -25,6 +25,8 @@ public class Client {
     private JFrame frame;
     private List<JButton> buttons;
     private JPanel panel = new JPanel();
+    private JPanel panel2 = new JPanel();
+    private JLabel questionText = new JLabel();
 
     public void startClient() {
 //        String newUserName = JOptionPane.showInputDialog("What is your username?");
@@ -117,73 +119,77 @@ public class Client {
 
     public void getWelcomeFrame() {
         frame = new JFrame();
+        frame.setLayout(new BorderLayout());
         frame.setSize(500,800);
         frame.setResizable(false);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setTitle("the quiz game");
+        frame.setTitle("The quiz game");
         frame.setLocationRelativeTo(null);
         panel = new JPanel(new GridLayout(4,4));
-        frame.add(panel);
-        panel.add(new JLabel("Hello"));
+        frame.add(panel, BorderLayout.CENTER); // ha frågorna i center? Jlabel norråt för frågoan i sig.
+        panel.add(new JLabel("panel1"));
+        frame.add(panel2, BorderLayout.NORTH);
+        panel2.add(new JLabel("panel2"));
+
 
         frame.setVisible(true);
     }
 
     public void getQuestionFrame(Question question, ObjectOutputStream out) {
         panel.removeAll();
+        panel2.removeAll();
 
-        for(JButton currentButton: buttons) { //Clean up previous action listeners
-            for( ActionListener al : currentButton.getActionListeners() ) {
-                currentButton.removeActionListener( al );
+        panel2.add(new JLabel(question.getQuestion()));
+        panel2.add(questionText, BorderLayout.NORTH);
+
+        for (JButton currentButton : buttons) { //Clean up previous action listeners
+            for (ActionListener al : currentButton.getActionListeners()) {
+                currentButton.removeActionListener(al);
             }
         }
 
         int counter = 0;
+//        JButton correct = new JButton();
         for (String q : question.getSubjectQuestions()) {
             JButton b = buttons.get(counter);
             b.setText(q);
-            b.setOpaque(false);
-//            b.setBackground(Color.BLUE);
-
-            panel.add(b);
+            // buttons.get(counter).setOpaque(false);
+//            buttons.get(counter).setBackground(Color.white);
 
             b.addActionListener(e -> {
                 JButton button = (JButton) e.getSource();
+                button.setOpaque(true);
+                // Kontrollera svaret och ändra färg
+                boolean isCorrect = button.getText().equalsIgnoreCase(question.getCorrectAnswer());
+                button.setBackground(isCorrect ? Color.GREEN : Color.RED);
 
-                button.setBackground(Color.BLUE);
-
-                try {
-                    if (button.getText().equalsIgnoreCase(question.getCorrectAnswer())) {
-                        System.out.println("Right");
-                        button.setBackground(Color.GREEN);
-//                        button.setForeground(Color.GREEN);
-                    } else {
-                        System.out.println("sWrong");
-                        button.setBackground(Color.RED);
-//                        button.setForeground(Color.RED);
+                // Skicka resultatet efter en kort fördröjning
+                Timer timer = new Timer(1000, evt -> {
+                    try {
+                        out.writeObject(new Pack(States.GUESS, button.getText()));
+                    } catch (IOException ex) {
+                        throw new RuntimeException(ex);
                     }
-
-                    Thread.sleep(5000);
-                    button.setBackground(Color.LIGHT_GRAY);
-
-                    out.writeObject(new Pack(States.GUESS, button.getText()));
-                } catch (IOException ex) {
-                    throw new RuntimeException(ex);
-                } catch (InterruptedException ex) {
-                    throw new RuntimeException(ex);
-                }
+                    button.setBackground(Color.white); // TODO fullösning??
+                });
+                timer.setRepeats(false);
+                timer.start();
             });
-
+            panel.add(b);
             counter++;
         }
-
-
         panel.revalidate();
         panel.repaint();
+        panel2.revalidate();
+        panel2.repaint();
     }
 
     public void getCategoryFrame(List<ESubject> subjects, ObjectOutputStream out) {
         panel.removeAll();
+        panel2.removeAll();
+
+        panel2.add(new JLabel("Choose Subject"));
+        panel2.add(questionText, BorderLayout.NORTH);
 
         int counter = 0;
         for (ESubject subject : subjects) {
@@ -208,9 +214,10 @@ public class Client {
 
             counter++;
         }
-
         panel.revalidate();
         panel.repaint();
+        panel2.revalidate();
+        panel2.repaint();
     }
 
     public static void main(String[] args) {
