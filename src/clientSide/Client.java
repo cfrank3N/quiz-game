@@ -13,6 +13,9 @@ import java.awt.event.ActionListener;
 import java.io.*;
 import java.net.Socket;
 
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -41,7 +44,7 @@ public class Client {
 
     public void startClient() {
 //        String newUserName = JOptionPane.showInputDialog("What is your username?");
-        user = new User("newUserName", "", "", 0, "src/avatars/basic_boy.png");
+        user = new User("newUserName", "", "", 0, "src/images.avatars/basic_boy.png");
 //        frame = new JFrame();
         buttons = new ArrayList<>(List.of(new JButton(""), new JButton(""), new JButton(""), new JButton("")));
 
@@ -71,7 +74,8 @@ public class Client {
                 getWelcomeFrame();
                 break;
             case SEND_USER:
-                out.writeObject(new Pack(States.PLAYER_DTO, user));
+//                out.writeObject(new Pack(States.PLAYER_DTO, user));
+                getAvatarFrame(out);
                 break;
             case PLAYER_DTO:
                 PlayerDTO opponentInformation = (PlayerDTO) packFromServer.object();
@@ -129,6 +133,71 @@ public class Client {
             default:
                 break;
         }
+    }
+
+    public void getAvatarFrame(ObjectOutputStream out) {
+        user = new User("Guest","","",0, "src/images/images/avatars/1.png");
+        panel.removeAll();
+        panel2.removeAll();
+
+        JLabel l = new JLabel("Username");
+        JTextField usernameField = new JTextField();
+        JButton setName = new JButton("Set");
+        JLabel l2 = new JLabel("Pick Avatar");
+        JPanel avatarContainer = new JPanel(new GridLayout(3,3,2,2));
+
+        try (DirectoryStream<Path> stream = Files.newDirectoryStream(Path.of("src/images/avatars"))){
+            stream.forEach(p -> {
+                JButton b = new JButton(new ImageIcon(p.toString()));
+                b.setName(p.toString());
+
+                b.addActionListener(e -> {
+                    JButton button = (JButton) e.getSource();
+                    user.setAvatarPath(button.getName());
+                });
+
+                avatarContainer.add(b);
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        setName.addActionListener(e -> {
+            user.setUsername(usernameField.getText());
+        });
+
+
+        JButton finish = new JButton("Finish");
+        finish.addActionListener(e -> {
+            try {
+                out.writeObject(new Pack(States.USER, user));
+                panel.setLayout(new GridLayout(4,4));
+                getWaitFrame();
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
+
+        panel.setLayout(null);
+
+        l.setBounds(215,70,200,30);
+        usernameField.setBounds(150,100,200,30);
+        setName.setBounds(200,150,100,30);
+        l2.setBounds(215,215,200,30);
+        avatarContainer.setBounds(70,250,360,360);
+        finish.setBounds(200,650,100,30);
+
+        panel.add(l);
+        panel.add(usernameField);
+        panel.add(setName);
+        panel.add(l2);
+        panel.add(avatarContainer);
+        panel.add(finish);
+
+        panel2.revalidate();
+        panel2.repaint();
+        panel.revalidate();
+        panel.repaint();
     }
 
     public void getWaitFrame() {
@@ -233,7 +302,31 @@ public class Client {
     public void getScoreFrame(Scoreboard score) throws InterruptedException {
         panel.removeAll();
         panel2.removeAll();
-        panel2.add(new JLabel("Scoreboard"));
+//        panel2.add(new JLabel("Scoreboard"));
+        panel2.setLayout(new FlowLayout());
+
+        JPanel playerInfoPanel = new JPanel(new GridLayout(2,3));
+        panel2.add(playerInfoPanel);
+
+        JLabel clientName = new JLabel(board.getMe().getName());
+        JLabel clientAvatar = new JLabel(board.getMe().getAvatar());
+        JLabel opponentName = new JLabel(board.getOpponent().getName());
+        JLabel opponentAvatar = new JLabel(board.getOpponent().getAvatar());
+
+        JButton invisibleButton = new JButton();
+        invisibleButton.setSize(120,120);
+        JButton invisibleButton2 = new JButton();
+        invisibleButton.setSize(120,120);
+//        invisibleButton.setOpaque(false); // Make button background invisible
+//        invisibleButton.setContentAreaFilled(false); // Remove button content area
+//        invisibleButton.setBorderPainted(false); // Remove border
+
+        playerInfoPanel.add(clientName);
+        playerInfoPanel.add(invisibleButton);
+        playerInfoPanel.add(opponentName);
+        playerInfoPanel.add(clientAvatar);
+        playerInfoPanel.add(invisibleButton2);
+        playerInfoPanel.add(opponentAvatar);
 
         switch (score.getMe().size()) {
             case 3:
