@@ -43,12 +43,6 @@ public class Game extends Thread {
                 determineAction();
             }
 
-            String endMessage = "The game has ended. Thank you for playing!";
-            p1.sendToClient(new Pack(States.WAIT, endMessage));
-            p2.sendToClient(new Pack(States.WAIT, endMessage));
-
-
-
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -74,7 +68,7 @@ public class Game extends Thread {
                     status = FIRST_STEP;
                     break;
                 case FIRST_STEP:
-                    for (int i = 0; i < 3; i++) {
+                    for (int i = 0; i < 6; i++) {
                         currentPlayer.getOpponent().sendToClient(new Pack(States.WAIT, "Wait for player"));
                         currentPlayer.sendToClient(new Pack(States.CHOOSE_CATEGORY, generateCategory()));
                         ESubject subject = (ESubject) (((Pack) currentPlayer.receiveFromClient()).object()); //Wait for subject
@@ -113,16 +107,29 @@ public class Game extends Thread {
                     int p1Points = p1.getPoint();
                     int p2Points = p2.getPoint();
                     String winnerMessage;
+                    String loserMessage;
                     if (p1Points > p2Points) {
-                        winnerMessage = "Player 1 ("+ p1.getUser().getUsername()+ ") wins with " + p1Points + " points!";
+                        winnerMessage = "YOU WIN! You win with " + p1Points + " points!";
+                        loserMessage = "YOU LOSE! You lose " + p2Points + " points!";
+                        p1.getOut().reset();
+                        p1.sendToClient(new Pack(States.DETERMINE_WINNER, winnerMessage));
+                        p2.getOut().reset();
+                        p2.sendToClient(new Pack(States.DETERMINE_WINNER, loserMessage));
                     } else if (p2Points > p1Points) {
-                        winnerMessage = "Player 2 (" + p2.getUser().getUsername()+ ") wins with " + p2Points + " points!";
+                        winnerMessage = "YOU WIN! You win with " + p2Points + " points!";
+                        loserMessage = "YOU LOSE! You lose " + p1Points + " points!";
+                        p1.getOut().reset();
+                        p1.sendToClient(new Pack(States.DETERMINE_WINNER, loserMessage));
+                        p2.getOut().reset();
+                        p2.sendToClient(new Pack(States.DETERMINE_WINNER, winnerMessage));
                     } else {
                         winnerMessage = "Its a tie! Both players have " + p1Points + " point!";
+                        p1.getOut().reset();
+                        p1.sendToClient(new Pack(States.DETERMINE_WINNER, winnerMessage));
+                        p2.getOut().reset();
+                        p2.sendToClient(new Pack(States.DETERMINE_WINNER, winnerMessage));
                     }
 
-                    p1.sendToClient(new Pack(States.WAIT, winnerMessage));
-                    p2.sendToClient(new Pack(States.WAIT, winnerMessage));
 
                     status = GameState.FINISHED;
                     break;
