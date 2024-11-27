@@ -4,6 +4,8 @@ import shared.User;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 
 //Should send to client at start so that client always have access to the way the server views the player
 public class Player {
@@ -13,6 +15,7 @@ public class Player {
     private ObjectInputStream in;
     private Player opponent;
     private User user;
+    private List<Integer> result;
 
     public Player getOpponent() {
         return opponent;
@@ -68,6 +71,7 @@ public class Player {
 
     //Constructor taking in a socket and defining the input and outputstreams for the player.
     public Player(Socket socket) {
+        result = new ArrayList<>();
         this.socket = socket;
         try {
             in = new ObjectInputStream(this.socket.getInputStream());
@@ -90,4 +94,7 @@ public class Player {
         return in.readObject();
     }
 
+    public List<Integer> getResult() {
+        return result;
+    }
 }

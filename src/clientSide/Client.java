@@ -83,6 +83,12 @@ public class Client {
                 getWaitFrame();
                 break;
 
+            case CURRENT_SCORE:
+                System.out.println("This is your current score: ");
+                List<Integer> score = (List<Integer>) packFromServer.object();
+                System.out.println(score);
+                break;
+
             case SEND_CORRECT_ANSWER:
                 System.out.println(packFromServer.object());
                 break;
