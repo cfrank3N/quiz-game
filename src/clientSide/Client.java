@@ -5,10 +5,7 @@ import enums.States;
 import packettosend.Pack;
 import serverSide.AudioManager;
 import serverSide.GameLook;
-import shared.Question;
-import shared.PlayerDTO;
-import shared.ScoreboardDTO;
-import shared.User;
+import shared.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -22,6 +19,7 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Client {
+    private final AudioManager am = new AudioManager();
     private Board board;
     private User user;
     private JFrame frame;
@@ -29,7 +27,14 @@ public class Client {
     private JPanel panel = new JPanel();
     private JPanel panel2 = new JPanel();
     private JLabel questionText = new JLabel();
-    private final AudioManager am = new AudioManager();
+    private JLabel round1 = new JLabel();
+    private JLabel round2 = new JLabel();
+    private JLabel round3 = new JLabel();
+
+    public static void main(String[] args) {
+        Client client = new Client();
+        client.startClient();
+    }
 
     public void startClient() {
 //        String newUserName = JOptionPane.showInputDialog("What is your username?");
@@ -50,12 +55,12 @@ public class Client {
                 determineAction(messageFromServer, out);
             }
 
-        } catch (IOException | ClassNotFoundException e) {
+        } catch (IOException | ClassNotFoundException | InterruptedException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public void determineAction(Object fromServer, ObjectOutputStream out) throws IOException {
+    public void determineAction(Object fromServer, ObjectOutputStream out) throws IOException, InterruptedException {
         Pack packFromServer = (Pack) fromServer;
         switch (packFromServer.header()) {
             case WELCOME:
@@ -75,7 +80,7 @@ public class Client {
                 break;
 
             case CHOOSE_CATEGORY:
-                List<ESubject> catagories = (List<ESubject>)packFromServer.object();
+                List<ESubject> catagories = (List<ESubject>) packFromServer.object();
                 getCategoryFrame(catagories, out);
 
                 break;
@@ -86,8 +91,11 @@ public class Client {
 
             case CURRENT_SCORE:
                 System.out.println("This is your current score: ");
-                List<Integer> score = (List<Integer>) packFromServer.object();
+                Scoreboard score = (Scoreboard) packFromServer.object();
+
                 System.out.println(score);
+
+                getScoreFrame(score);
                 break;
 
             case SEND_CORRECT_ANSWER:
@@ -116,8 +124,6 @@ public class Client {
         }
     }
 
-
-
     public void getWaitFrame() {
         panel.removeAll();
         panel2.removeAll();
@@ -132,12 +138,12 @@ public class Client {
     public void getWelcomeFrame() {
         frame = new JFrame();
         frame.setLayout(new BorderLayout());
-        frame.setSize(500,800);
+        frame.setSize(500, 800);
         frame.setResizable(false);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setTitle("The quiz game");
         frame.setLocationRelativeTo(null);
-        panel = new JPanel(new GridLayout(4,4));
+        panel = new JPanel(new GridLayout(4, 4));
         frame.add(panel, BorderLayout.CENTER); // ha frågorna i center? Jlabel norråt för frågoan i sig.
         panel.add(new JLabel("panel1"));
         frame.add(panel2, BorderLayout.NORTH);
@@ -204,6 +210,66 @@ public class Client {
         panel2.repaint();
     }
 
+    public void getScoreFrame(Scoreboard score) throws InterruptedException {
+        panel.removeAll();
+        panel2.removeAll();
+
+        panel2.add(new JLabel("Scoreboard"));
+
+//        panel.add(new JLabel(board.getMe().getName()));
+//        panel.add(new JLabel(board.getOpponent().getName()));
+
+
+        switch (score.getMe().size()) {
+            case 3:
+                int myScore = 0;
+                int opponentScore = 0;
+                for (int i : score.getMe()) {
+                    myScore += i;
+                }
+                for (int j : score.getOpponent()) {
+                    opponentScore += j;
+                }
+                round1 = new JLabel("Round 1: " + myScore + " - " + opponentScore);
+                panel.add(round1);
+                break;
+            case 6:
+                myScore = 0;
+                opponentScore = 0;
+                for (int i : score.getMe()) {
+                    myScore += i;
+                }
+                for (int j : score.getOpponent()) {
+                    opponentScore += j;
+                }
+                round2 = new JLabel("Round 2: " + myScore + " - " + opponentScore);
+                panel.add(round1);
+                panel.add(round2);
+                break;
+            case 9:
+                myScore = 0;
+                opponentScore = 0;
+                for (int i : score.getMe()) {
+                    myScore += i;
+                }
+                for (int j : score.getOpponent()) {
+                    opponentScore += j;
+                }
+                round3 = new JLabel("Round 3: " + myScore + " - " + opponentScore);
+                panel.add(round1);
+                panel.add(round2);
+                panel.add(round3);
+                break;
+        }
+        panel.revalidate();
+        panel.repaint();
+        panel2.revalidate();
+        panel2.repaint();
+
+        Thread.sleep(2000);
+
+    }
+
     public void getCategoryFrame(List<ESubject> subjects, ObjectOutputStream out) {
 
         for (JButton currentButton : buttons) { //Clean up previous action listeners
@@ -245,10 +311,5 @@ public class Client {
         panel.repaint();
         panel2.revalidate();
         panel2.repaint();
-    }
-
-    public static void main(String[] args) {
-        Client client = new Client();
-        client.startClient();
     }
 }

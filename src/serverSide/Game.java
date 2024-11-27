@@ -5,10 +5,7 @@ import enums.ESubject;
 import packettosend.Pack;
 import enums.GameState;
 import enums.States;
-import shared.PlayerDTO;
-import shared.Question;
-import shared.ScoreboardDTO;
-import shared.User;
+import shared.*;
 
 import java.io.IOException;
 import java.util.*;
@@ -87,12 +84,15 @@ public class Game extends Thread {
                         loopQAndA(currentQuestions);
                         currentPlayer.sendToClient(new Pack(States.WAIT, "Wait for player"));
                         currentPlayer.getOut().reset();
-                        currentPlayer.sendToClient(new Pack(States.CURRENT_SCORE, currentPlayer.getResult()));
+                        currentPlayer.sendToClient(new Pack(States.CURRENT_SCORE, new Scoreboard(currentPlayer.getResult(), currentPlayer.getOpponent().getResult())));
                         currentPlayer = currentPlayer.getOpponent();//Switch to other participant
                         System.out.println("switched player");
                         loopQAndA(currentQuestions);
                         currentPlayer.getOut().reset();
-                        currentPlayer.sendToClient(new Pack(States.CURRENT_SCORE, currentPlayer.getResult()));
+                        currentPlayer.sendToClient(new Pack(States.CURRENT_SCORE, new Scoreboard(currentPlayer.getResult(), currentPlayer.getOpponent().getResult())));
+                        currentPlayer.getOpponent().getOut().reset();
+                        currentPlayer.getOpponent().sendToClient(new Pack(States.CURRENT_SCORE, new Scoreboard(currentPlayer.getOpponent().getResult(), currentPlayer.getResult())));
+
 
 //                        String scoreUpdate = "Current scores: " +
 //                            currentPlayer.getUser().getUsername() + " (" + currentPlayer.getPoint() + ") - " +
