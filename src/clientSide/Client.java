@@ -113,8 +113,11 @@ public class Client {
 
     public void getWaitFrame() {
         panel.removeAll();
+        panel2.removeAll();
         panel.add(new JLabel("Waiting"));
 
+        panel2.revalidate();
+        panel2.repaint();
         panel.revalidate();
         panel.repaint();
     }
@@ -137,11 +140,6 @@ public class Client {
     }
 
     public void getQuestionFrame(Question question, ObjectOutputStream out) {
-        panel.removeAll();
-        panel2.removeAll();
-
-        panel2.add(new JLabel(question.getQuestion()));
-        panel2.add(questionText, BorderLayout.NORTH);
 
         for (JButton currentButton : buttons) { //Clean up previous action listeners
             for (ActionListener al : currentButton.getActionListeners()) {
@@ -149,15 +147,20 @@ public class Client {
             }
         }
 
+        panel.removeAll();
+        panel2.removeAll();
+        panel2.add(new JLabel(question.getQuestion()));
+
         int counter = 0;
 //        JButton correct = new JButton();
         for (String q : question.getSubjectQuestions()) {
             JButton b = buttons.get(counter);
             b.setText(q);
             // buttons.get(counter).setOpaque(false);
-//            buttons.get(counter).setBackground(Color.white);
 
-            // user clicks buttons
+            buttons.get(counter).setBackground(Color.white);
+            panel.add(b);
+
             b.addActionListener(e -> {
                 JButton button = (JButton) e.getSource();
                 button.setOpaque(true);
@@ -185,7 +188,6 @@ public class Client {
                 timer.setRepeats(false);
                 timer.start();
             });
-            panel.add(b);
             counter++;
         }
         panel.revalidate();
@@ -195,6 +197,13 @@ public class Client {
     }
 
     public void getCategoryFrame(List<ESubject> subjects, ObjectOutputStream out) {
+
+        for (JButton currentButton : buttons) { //Clean up previous action listeners
+            for (ActionListener al : currentButton.getActionListeners()) {
+                currentButton.removeActionListener(al);
+            }
+        }
+
         panel.removeAll();
         panel2.removeAll();
 
