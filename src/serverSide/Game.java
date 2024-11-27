@@ -91,21 +91,16 @@ public class Game extends Thread {
                         loopQAndA(currentQuestions);
 
                         String scoreUpdate = "Current scores: " +
-                                currentPlayer.getUser().getUsername() + " (" + currentPlayer.getPoint() + ") - " +
-                                currentPlayer.getOpponent().getUser().getUsername() + " (" + currentPlayer.getOpponent().getPoint() + ")";
-                        currentPlayer.sendToClient(new Pack(States.WAIT, scoreUpdate));
-                        currentPlayer.getOpponent().sendToClient(new Pack(States.WAIT, scoreUpdate));
-
-
-
+                            currentPlayer.getUser().getUsername() + " (" + currentPlayer.getPoint() + ") - " +
+                            currentPlayer.getOpponent().getUser().getUsername() + " (" + currentPlayer.getOpponent().getPoint() + ")";
+                            currentPlayer.sendToClient(new Pack(States.WAIT, scoreUpdate));
+                            currentPlayer.getOpponent().sendToClient(new Pack(States.WAIT, scoreUpdate));
 
                         //Tell players to update views
                         //ScoreboardDTO scoreboardDTOp1 = new ScoreboardDTO(currentPlayer.getPoint(), currentPlayer.getOpponent().getPoint());
                         //ScoreboardDTO scoreboardDTOp2 = new ScoreboardDTO(currentPlayer.getOpponent().getPoint(), currentPlayer.getPoint());
                         //currentPlayer.sendToClient(new Pack(States.SCOREBOARD_DTO, scoreboardDTOp1));
                         //currentPlayer.getOpponent().sendToClient(new Pack(States.SCOREBOARD_DTO, scoreboardDTOp2));
-
-
                     }
                     status = SECOND_STEP;
                     break;
@@ -159,9 +154,7 @@ public class Game extends Thread {
     public List<ESubject> generateCategory(){
 
         List<ESubject>categories=new ArrayList<>(List.of(ESubject.values()));
-
         Collections.shuffle(categories);
-
         return new ArrayList<>(categories.subList(0, 3));
     }
 }

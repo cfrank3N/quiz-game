@@ -30,7 +30,7 @@ public class Server {
                 Game game = new Game(p1, p2);
                 game.start();
                 System.out.println("Server started");
-                am.playThemeSong();
+//                am.playThemeSong();
 
 
             }

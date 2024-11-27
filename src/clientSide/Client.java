@@ -133,7 +133,6 @@ public class Client {
         frame.add(panel2, BorderLayout.NORTH);
         panel2.add(new JLabel("panel2"));
 
-
         frame.setVisible(true);
     }
 
@@ -173,7 +172,6 @@ public class Client {
                 } else {
                     am.playAudioMoveFail();
                 }
-
 
                 // Skicka resultatet efter en kort fördröjning
                 Timer timer = new Timer(700, evt -> {
