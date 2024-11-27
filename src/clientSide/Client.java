@@ -17,6 +17,7 @@ import java.io.*;
 import java.net.Socket;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
 
@@ -159,6 +160,7 @@ public class Client {
 
         int counter = 0;
 //        JButton correct = new JButton();
+        Collections.shuffle(question.getSubjectQuestions());
         for (String q : question.getSubjectQuestions()) {
             JButton b = buttons.get(counter);
             b.setText(q);
