@@ -78,23 +78,27 @@ public class Game extends Thread {
                     break;
                 case FIRST_STEP:
                     for (int i = 0; i < 3; i++) {
-                        currentPlayer.getOpponent().sendToClient(new Pack(States.WAIT, "Waiting for opponent"));
+                        currentPlayer.getOpponent().sendToClient(new Pack(States.WAIT, "Wait for player"));
                         currentPlayer.sendToClient(new Pack(States.CHOOSE_CATEGORY, generateCategory()));
                         ESubject subject = (ESubject) (((Pack) currentPlayer.receiveFromClient()).object()); //Wait for subject
 
                         List<Question> currentQuestions = db.threebySubject(subject); //Pick a question
 
                         loopQAndA(currentQuestions);
-                        currentPlayer.sendToClient(new Pack(States.WAIT, "Waiting for opponent"));
+                        currentPlayer.sendToClient(new Pack(States.WAIT, "Wait for player"));
+                        currentPlayer.getOut().reset();
+                        currentPlayer.sendToClient(new Pack(States.CURRENT_SCORE, currentPlayer.getResult()));
                         currentPlayer = currentPlayer.getOpponent();//Switch to other participant
                         System.out.println("switched player");
                         loopQAndA(currentQuestions);
+                        currentPlayer.getOut().reset();
+                        currentPlayer.sendToClient(new Pack(States.CURRENT_SCORE, currentPlayer.getResult()));
 
-                        String scoreUpdate = "Current scores: " +
-                            currentPlayer.getUser().getUsername() + " (" + currentPlayer.getPoint() + ") - " +
-                            currentPlayer.getOpponent().getUser().getUsername() + " (" + currentPlayer.getOpponent().getPoint() + ")";
-                            currentPlayer.sendToClient(new Pack(States.WAIT, scoreUpdate));
-                            currentPlayer.getOpponent().sendToClient(new Pack(States.WAIT, scoreUpdate));
+//                        String scoreUpdate = "Current scores: " +
+//                            currentPlayer.getUser().getUsername() + " (" + currentPlayer.getPoint() + ") - " +
+//                            currentPlayer.getOpponent().getUser().getUsername() + " (" + currentPlayer.getOpponent().getPoint() + ")";
+//                            currentPlayer.sendToClient(new Pack(States.WAIT, scoreUpdate));
+//                            currentPlayer.getOpponent().sendToClient(new Pack(States.WAIT, scoreUpdate));
 
                         //Tell players to update views
                         //ScoreboardDTO scoreboardDTOp1 = new ScoreboardDTO(currentPlayer.getPoint(), currentPlayer.getOpponent().getPoint());
@@ -144,8 +148,10 @@ public class Game extends Thread {
             String answer = (String) ((Pack) currentPlayer.receiveFromClient()).object();
             if (isCorrectAnswer(q, answer)) {
                 currentPlayer.incrementPoint();
+                currentPlayer.getResult().add(1);
                 currentPlayer.sendToClient(new Pack(States.SEND_CORRECT_ANSWER, "Correct"));
             } else {
+                currentPlayer.getResult().add(0);
                 currentPlayer.sendToClient(new Pack(States.SEND_CORRECT_ANSWER, "Incorrect"));
             }
         }

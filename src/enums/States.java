@@ -16,5 +16,6 @@ public enum States {
     SEND_PLAYER_DTO,
     PLAYER_DTO,
     SEND_USER,
-    USER
+    USER,
+    CURRENT_SCORE
 }
