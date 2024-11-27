@@ -83,9 +83,12 @@ public class SerializationManager<T> {
              ObjectOutputStream objectout = new ObjectOutputStream(fileout)) {
 
             objectout.writeObject(objects);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
+        try {
             Path source = Paths.get(tempFilePath);
-
             Files.move(source, source.resolveSibling(name), StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
             e.printStackTrace();
