@@ -37,6 +37,10 @@ public class Client {
     private JLabel round5 = new JLabel();
     private JLabel round6 = new JLabel();
 
+    public Client() {
+//        user = new User("Guest","","",0, "src/images/avatars/1.png");
+    }
+
     public static void main(String[] args) {
         Client client = new Client();
         client.startClient();
@@ -44,7 +48,6 @@ public class Client {
 
     public void startClient() {
 //        String newUserName = JOptionPane.showInputDialog("What is your username?");
-        user = new User("newUserName", "", "", 0, "src/images.avatars/basic_boy.png");
 //        frame = new JFrame();
         buttons = new ArrayList<>(List.of(new JButton(""), new JButton(""), new JButton(""), new JButton("")));
 
@@ -80,6 +83,7 @@ public class Client {
             case PLAYER_DTO:
                 PlayerDTO opponentInformation = (PlayerDTO) packFromServer.object();
 
+                System.out.println("Set my avatar path as: " + user.getAvatarPath());
                 Player me = new Player(0, user.getUsername(), new ImageIcon(user.getAvatarPath()));
                 Player opponent = new Player(0, opponentInformation.name(), new ImageIcon(opponentInformation.avatarPath()));
 
@@ -97,10 +101,10 @@ public class Client {
                 break;
 
             case CURRENT_SCORE:
-                System.out.println("This is your current score: ");
+//                System.out.println("This is your current score: ");
                 Scoreboard score = (Scoreboard) packFromServer.object();
-
-                System.out.println(score);
+//
+//                System.out.println(score);
 
                 getScoreFrame(score);
                 break;
@@ -203,7 +207,12 @@ public class Client {
     public void getWaitFrame() {
         panel.removeAll();
         panel2.removeAll();
-        panel.add(new JLabel("Waiting"));
+
+        panel.setLayout(null);
+
+        JLabel label = new JLabel("Waiting");
+        label.setBounds(220,10,100,100);
+        panel.add(label);
 
         panel2.revalidate();
         panel2.repaint();
@@ -251,6 +260,7 @@ public class Client {
 
         panel.removeAll();
         panel2.removeAll();
+        panel.setLayout(new GridLayout(4, 4));
         panel2.add(new JLabel(question.getQuestion()));
 
         int counter = 0;
@@ -303,30 +313,29 @@ public class Client {
         panel.removeAll();
         panel2.removeAll();
 //        panel2.add(new JLabel("Scoreboard"));
-        panel2.setLayout(new FlowLayout());
 
-        JPanel playerInfoPanel = new JPanel(new GridLayout(2,3));
-        panel2.add(playerInfoPanel);
+//        JPanel playerInfoPanel = new JPanel(new GridLayout(2,3));
+//        panel2.add(playerInfoPanel);
+
+        panel.setLayout(null);
+
+        System.out.println("My name: " + board.getMe().getName());
+        System.out.println("My avatar: " + board.getMe().getAvatar().getDescription());
 
         JLabel clientName = new JLabel(board.getMe().getName());
         JLabel clientAvatar = new JLabel(board.getMe().getAvatar());
         JLabel opponentName = new JLabel(board.getOpponent().getName());
         JLabel opponentAvatar = new JLabel(board.getOpponent().getAvatar());
 
-        JButton invisibleButton = new JButton();
-        invisibleButton.setSize(120,120);
-        JButton invisibleButton2 = new JButton();
-        invisibleButton.setSize(120,120);
-//        invisibleButton.setOpaque(false); // Make button background invisible
-//        invisibleButton.setContentAreaFilled(false); // Remove button content area
-//        invisibleButton.setBorderPainted(false); // Remove border
+        clientName.setBounds(20,160,120,30);
+        clientAvatar.setBounds(20,30,120,120);
+        opponentName.setBounds(360,160,120,30);
+        opponentAvatar.setBounds(360,30,120,120);
 
-        playerInfoPanel.add(clientName);
-        playerInfoPanel.add(invisibleButton);
-        playerInfoPanel.add(opponentName);
-        playerInfoPanel.add(clientAvatar);
-        playerInfoPanel.add(invisibleButton2);
-        playerInfoPanel.add(opponentAvatar);
+        panel.add(clientName);
+        panel.add(opponentName);
+        panel.add(clientAvatar);
+        panel.add(opponentAvatar);
 
         switch (score.getMe().size()) {
             case 3:
@@ -339,6 +348,7 @@ public class Client {
                     opponentScore += j;
                 }
                 round1 = new JLabel("Round 1: " + myScore + " - " + opponentScore);
+                round1.setBounds(190,250,120,30);
                 panel.add(round1);
                 break;
             case 6:
@@ -351,6 +361,7 @@ public class Client {
                     opponentScore += j;
                 }
                 round2 = new JLabel("Round 2: " + myScore + " - " + opponentScore);
+                round2.setBounds(190,250,120,30);
                 panel.add(round1);
                 panel.add(round2);
                 break;
@@ -364,6 +375,7 @@ public class Client {
                     opponentScore += j;
                 }
                 round3 = new JLabel("Round 3: " + myScore + " - " + opponentScore);
+                round3.setBounds(190,290,120,30);
                 panel.add(round1);
                 panel.add(round2);
                 panel.add(round3);
@@ -378,6 +390,7 @@ public class Client {
                     opponentScore += j;
                 }
                 round4 = new JLabel("Round 4: " + myScore + " - " + opponentScore);
+                round4.setBounds(190,290,120,30);
                 panel.add(round1);
                 panel.add(round2);
                 panel.add(round3);
@@ -393,6 +406,7 @@ public class Client {
                     opponentScore += j;
                 }
                 round5 = new JLabel("Round 5: " + myScore + " - " + opponentScore);
+                round5.setBounds(190,330,120,30);
                 panel.add(round1);
                 panel.add(round2);
                 panel.add(round3);
@@ -409,6 +423,7 @@ public class Client {
                     opponentScore += j;
                 }
                 round6 = new JLabel("Round 6: " + myScore + " - " + opponentScore);
+                round3.setBounds(190,330,120,30);
                 panel.add(round1);
                 panel.add(round2);
                 panel.add(round3);
@@ -436,6 +451,8 @@ public class Client {
 
         panel.removeAll();
         panel2.removeAll();
+
+        panel.setLayout(new GridLayout(4, 4));
 
         panel2.add(new JLabel("Choose Subject"));
         panel2.add(questionText, BorderLayout.NORTH);

@@ -54,16 +54,17 @@ public class Game extends Thread {
                 case SETUP:
                     //Retrieve p1 user and send player dto to p2
                     currentPlayer.sendToClient(new Pack(States.SEND_USER, null));
-                    User user = (User) ((Pack) currentPlayer.receiveFromClient()).object();
-                    currentPlayer.setUser(user);
+                    User user1 = (User) ((Pack) currentPlayer.receiveFromClient()).object();
+                    currentPlayer.setUser(user1);
 
-                    currentPlayer.getOpponent().sendToClient(new Pack(States.PLAYER_DTO, new PlayerDTO(user.getUsername(), user.getAvatarPath())));
+//                    currentPlayer.getOpponent().sendToClient(new Pack(States.PLAYER_DTO, new PlayerDTO(user.getUsername(), user.getAvatarPath())));
                     //Retrieve p2 user and send player dto to p1
                     currentPlayer.getOpponent().sendToClient(new Pack(States.SEND_USER, null));
-                    user = (User) ((Pack) currentPlayer.getOpponent().receiveFromClient()).object();
-                    currentPlayer.getOpponent().setUser(user);
+                    User user2 = (User) ((Pack) currentPlayer.getOpponent().receiveFromClient()).object();
+                    currentPlayer.getOpponent().setUser(user2);
 
-                    currentPlayer.sendToClient(new Pack(States.PLAYER_DTO, new PlayerDTO(user.getUsername(), user.getAvatarPath())));
+                    currentPlayer.sendToClient(new Pack(States.PLAYER_DTO, new PlayerDTO(user2.getUsername(), user2.getAvatarPath())));
+                    currentPlayer.getOpponent().sendToClient(new Pack(States.PLAYER_DTO, new PlayerDTO(user1.getUsername(), user1.getAvatarPath())));
 
                     status = FIRST_STEP;
                     break;
