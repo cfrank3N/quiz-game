@@ -30,6 +30,9 @@ public class Client {
     private JLabel round1 = new JLabel();
     private JLabel round2 = new JLabel();
     private JLabel round3 = new JLabel();
+    private JLabel round4 = new JLabel();
+    private JLabel round5 = new JLabel();
+    private JLabel round6 = new JLabel();
 
     public static void main(String[] args) {
         Client client = new Client();
@@ -119,6 +122,10 @@ public class Client {
                 System.out.println("You: " + board.getMe().getPoints());
                 System.out.println("Opponent: " + board.getOpponent().getPoints());
                 break;
+            case DETERMINE_WINNER:
+                String message = (String) packFromServer.object();
+                getWinScreen(message);
+                break;
             default:
                 break;
         }
@@ -128,6 +135,19 @@ public class Client {
         panel.removeAll();
         panel2.removeAll();
         panel.add(new JLabel("Waiting"));
+
+        panel2.revalidate();
+        panel2.repaint();
+        panel.revalidate();
+        panel.repaint();
+    }
+
+    public void getWinScreen(String message) {
+        panel.removeAll();
+        panel2.removeAll();
+
+        panel.add(new JLabel(message));
+        panel2.add(new JLabel(message));
 
         panel2.revalidate();
         panel2.repaint();
@@ -213,12 +233,7 @@ public class Client {
     public void getScoreFrame(Scoreboard score) throws InterruptedException {
         panel.removeAll();
         panel2.removeAll();
-
         panel2.add(new JLabel("Scoreboard"));
-
-//        panel.add(new JLabel(board.getMe().getName()));
-//        panel.add(new JLabel(board.getOpponent().getName()));
-
 
         switch (score.getMe().size()) {
             case 3:
@@ -260,13 +275,61 @@ public class Client {
                 panel.add(round2);
                 panel.add(round3);
                 break;
+            case 12:
+                myScore = 0;
+                opponentScore = 0;
+                for (int i : score.getMe()) {
+                    myScore += i;
+                }
+                for (int j : score.getOpponent()) {
+                    opponentScore += j;
+                }
+                round4 = new JLabel("Round 4: " + myScore + " - " + opponentScore);
+                panel.add(round1);
+                panel.add(round2);
+                panel.add(round3);
+                panel.add(round4);
+                break;
+            case 15:
+                myScore = 0;
+                opponentScore = 0;
+                for (int i : score.getMe()) {
+                    myScore += i;
+                }
+                for (int j : score.getOpponent()) {
+                    opponentScore += j;
+                }
+                round5 = new JLabel("Round 5: " + myScore + " - " + opponentScore);
+                panel.add(round1);
+                panel.add(round2);
+                panel.add(round3);
+                panel.add(round4);
+                panel.add(round5);
+                break;
+            case 18:
+                myScore = 0;
+                opponentScore = 0;
+                for (int i : score.getMe()) {
+                    myScore += i;
+                }
+                for (int j : score.getOpponent()) {
+                    opponentScore += j;
+                }
+                round6 = new JLabel("Round 6: " + myScore + " - " + opponentScore);
+                panel.add(round1);
+                panel.add(round2);
+                panel.add(round3);
+                panel.add(round4);
+                panel.add(round5);
+                panel.add(round6);
+                break;
         }
         panel.revalidate();
         panel.repaint();
         panel2.revalidate();
         panel2.repaint();
 
-        Thread.sleep(2000);
+        Thread.sleep(5000);
 
     }
 
