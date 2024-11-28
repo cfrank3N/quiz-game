@@ -44,4 +44,12 @@ public class QuestionRepository implements Repository<Question> {
         return new ArrayList<>(questions.subList(0, 3));
 
     }
+
+    public List<Question> nrOfQuestionsBySubject(ESubject subject, int nrOfQuestions) {
+        Predicate<Question> p = q -> q.getSubject().equals(subject);
+        List<Question> allOfSubject = findAll(p);
+        Collections.shuffle(allOfSubject);
+
+        return new ArrayList<>(allOfSubject.subList(0,nrOfQuestions));
+    }
 }

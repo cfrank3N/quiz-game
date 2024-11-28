@@ -8,7 +8,7 @@ import java.awt.event.ActionListener;
 
 public class GameLook extends JFrame implements ActionListener {
     private final int frameWidth = 500, frameHeight = 800;
-    private final String BACKGROUND_PICTURE = "src/avatars/QuizBackground.jpg";
+    private final String BACKGROUND_PICTURE = "src/images.avatars/QuizBackground.jpg";
 
     //JFrame for choosing subject
     JFrame gameFrame = new JFrame();
@@ -43,7 +43,7 @@ public class GameLook extends JFrame implements ActionListener {
     JPanel inNorthPanelSouth = new JPanel();
     JButton score = new JButton("Score board");
 
-    ImageIcon profile = new ImageIcon("src/avatars/profilbild.jpg");
+    ImageIcon profile = new ImageIcon("src/images.avatars/profilbild.jpg");
     JLabel waitingPlayer = new JLabel("Waiting for second player");
     JLabel picture = new JLabel();
     //Frame för profile

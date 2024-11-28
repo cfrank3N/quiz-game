@@ -13,6 +13,9 @@ import java.awt.event.ActionListener;
 import java.io.*;
 import java.net.Socket;
 
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -34,6 +37,10 @@ public class Client {
     private JLabel round5 = new JLabel();
     private JLabel round6 = new JLabel();
 
+    public Client() {
+//        user = new User("Guest","","",0, "src/images/avatars/1.png");
+    }
+
     public static void main(String[] args) {
         Client client = new Client();
         client.startClient();
@@ -41,7 +48,6 @@ public class Client {
 
     public void startClient() {
 //        String newUserName = JOptionPane.showInputDialog("What is your username?");
-        user = new User("newUserName", "", "", 0, "src/avatars/basic_boy.png");
 //        frame = new JFrame();
         buttons = new ArrayList<>(List.of(new JButton(""), new JButton(""), new JButton(""), new JButton("")));
 
@@ -67,15 +73,17 @@ public class Client {
         Pack packFromServer = (Pack) fromServer;
         switch (packFromServer.header()) {
             case WELCOME:
-                System.out.println("Welcome to the game.");
+//                System.out.println("Welcome to the game.");
                 getWelcomeFrame();
                 break;
             case SEND_USER:
-                out.writeObject(new Pack(States.PLAYER_DTO, user));
+//                out.writeObject(new Pack(States.PLAYER_DTO, user));
+                getAvatarFrame(out);
                 break;
             case PLAYER_DTO:
                 PlayerDTO opponentInformation = (PlayerDTO) packFromServer.object();
 
+//                System.out.println("Set my avatar path as: " + user.getAvatarPath());
                 Player me = new Player(0, user.getUsername(), new ImageIcon(user.getAvatarPath()));
                 Player opponent = new Player(0, opponentInformation.name(), new ImageIcon(opponentInformation.avatarPath()));
 
@@ -88,21 +96,21 @@ public class Client {
 
                 break;
             case WAIT:
-                System.out.println(packFromServer.object());
+//                System.out.println(packFromServer.object());
                 getWaitFrame();
                 break;
 
             case CURRENT_SCORE:
-                System.out.println("This is your current score: ");
+//                System.out.println("This is your current score: ");
                 Scoreboard score = (Scoreboard) packFromServer.object();
-
-                System.out.println(score);
+//
+//                System.out.println(score);
 
                 getScoreFrame(score);
                 break;
 
             case SEND_CORRECT_ANSWER:
-                System.out.println(packFromServer.object());
+//                System.out.println(packFromServer.object());
                 break;
 
 
@@ -111,17 +119,17 @@ public class Client {
                 getQuestionFrame(question, out);
 
                 break;
-            case SCOREBOARD_DTO:
-                //Update
-                ScoreboardDTO scoreboardDTO = (ScoreboardDTO) packFromServer.object();
-                board.getMe().setPoints(scoreboardDTO.you());
-                board.getOpponent().setPoints(scoreboardDTO.opponent());
-
-                //View
-                System.out.println("Current score: ");
-                System.out.println("You: " + board.getMe().getPoints());
-                System.out.println("Opponent: " + board.getOpponent().getPoints());
-                break;
+//            case SCOREBOARD_DTO:
+//                //Update
+//                ScoreboardDTO scoreboardDTO = (ScoreboardDTO) packFromServer.object();
+//                board.getMe().setPoints(scoreboardDTO.you());
+//                board.getOpponent().setPoints(scoreboardDTO.opponent());
+//
+//                //View
+//                System.out.println("Current score: ");
+//                System.out.println("You: " + board.getMe().getPoints());
+//                System.out.println("Opponent: " + board.getOpponent().getPoints());
+//                break;
             case DETERMINE_WINNER:
                 String message = (String) packFromServer.object();
                 getWinScreen(message);
@@ -131,10 +139,83 @@ public class Client {
         }
     }
 
+    public void getAvatarFrame(ObjectOutputStream out) {
+        user = new User("Guest","","",0, "src/images/avatars/1.png");
+        panel.removeAll();
+        panel2.removeAll();
+
+        JLabel l = new JLabel("Username");
+        JTextField usernameField = new JTextField();
+        JButton setName = new JButton("Set");
+        JLabel l2 = new JLabel("Pick Avatar");
+        JPanel avatarContainer = new JPanel(new GridLayout(3,3,2,2));
+
+        try (DirectoryStream<Path> stream = Files.newDirectoryStream(Path.of("src/images/avatars"))){
+            stream.forEach(p -> {
+                JButton b = new JButton(new ImageIcon(p.toString()));
+                b.setName(p.toString());
+
+                b.addActionListener(e -> {
+                    JButton button = (JButton) e.getSource();
+                    user.setAvatarPath(button.getName());
+                });
+
+                avatarContainer.add(b);
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        setName.addActionListener(e -> {
+            user.setUsername(usernameField.getText());
+        });
+
+
+        JButton finish = new JButton("Finish");
+        finish.addActionListener(e -> {
+            try {
+                out.writeObject(new Pack(States.USER, user));
+                panel.setLayout(new GridLayout(4,4));
+                getWaitFrame();
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
+
+        panel.setLayout(null);
+
+        l.setBounds(215,70,200,30);
+        usernameField.setBounds(150,100,200,30);
+        setName.setBounds(200,150,100,30);
+        l2.setBounds(215,215,200,30);
+        avatarContainer.setBounds(70,250,360,360);
+        finish.setBounds(200,650,100,30);
+
+        panel.add(l);
+        panel.add(usernameField);
+        panel.add(setName);
+        panel.add(l2);
+        panel.add(avatarContainer);
+        panel.add(finish);
+
+        panel2.revalidate();
+        panel2.repaint();
+        panel.revalidate();
+        panel.repaint();
+    }
+
     public void getWaitFrame() {
         panel.removeAll();
         panel2.removeAll();
-        panel.add(new JLabel("Waiting"));
+
+        panel.setLayout(null);
+
+//        JLabel label = new JLabel("Waiting");
+        JLabel time = new JLabel(new ImageIcon("src/images/other/hourglass.png"));
+        time.setBounds(100,200,300,300);
+//        label.setBounds(220,10,100,100);
+//        panel.add(label);
+        panel.add(time);
 
         panel2.revalidate();
         panel2.repaint();
@@ -146,8 +227,22 @@ public class Client {
         panel.removeAll();
         panel2.removeAll();
 
-        panel.add(new JLabel(message));
-        panel2.add(new JLabel(message));
+//        panel.add(new JLabel(message));
+//        panel2.add(new JLabel(message));
+
+        JLabel jLabel = new JLabel(message);
+        jLabel.setBounds(160,30,400,60);
+        panel.add(jLabel);
+
+        if (message.contains("WIN")) {
+            JLabel winner = new JLabel(new ImageIcon("src/images/other/winner.png"));
+            winner.setBounds(50,100,400,400);
+            panel.add(winner);
+        } else {
+            JLabel loser = new JLabel(new ImageIcon("src/images/other/loser.png"));
+            loser.setBounds(50,100,400,400);
+            panel.add(loser);
+        }
 
         panel2.revalidate();
         panel2.repaint();
@@ -161,13 +256,13 @@ public class Client {
         frame.setSize(500, 800);
         frame.setResizable(false);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setTitle("The quiz game");
+        frame.setTitle("The Quiz Game");
         frame.setLocationRelativeTo(null);
         panel = new JPanel(new GridLayout(4, 4));
         frame.add(panel, BorderLayout.CENTER); // ha frågorna i center? Jlabel norråt för frågoan i sig.
-        panel.add(new JLabel("panel1"));
+//        panel.add(new JLabel("panel1"));
         frame.add(panel2, BorderLayout.NORTH);
-        panel2.add(new JLabel("panel2"));
+//        panel2.add(new JLabel("panel2"));
 
         frame.setVisible(true);
     }
@@ -182,22 +277,40 @@ public class Client {
 
         panel.removeAll();
         panel2.removeAll();
-        panel2.add(new JLabel(question.getQuestion()));
+        panel.setLayout(null);
+
+        JLabel questionImage = new JLabel(new ImageIcon("src/images/other/question.png"));
+        questionImage.setBounds(125,50,250,250);
+        panel.add(questionImage);
+
+        JPanel buttonContainer = new JPanel(new GridLayout(5,1));
+        buttonContainer.setBounds(50,300,400,400);
+        panel.add(buttonContainer);
+
+        JButton questionButton = new JButton(question.getQuestion());
+        questionButton.setFocusPainted(false);
+        questionButton.setBorderPainted(false);
+        buttonContainer.add(questionButton);
 
         int counter = 0;
 //        JButton correct = new JButton();
         Collections.shuffle(question.getSubjectQuestions());
         for (String q : question.getSubjectQuestions()) {
             JButton b = buttons.get(counter);
+//            JButton b = new JButton();
             b.setText(q);
             // buttons.get(counter).setOpaque(false);
 
             buttons.get(counter).setBackground(Color.white);
-            panel.add(b);
+            b.setBackground(Color.white);
+            b.setBounds(0,0,300,100);
+            buttonContainer.add(b);
 
             b.addActionListener(e -> {
                 JButton button = (JButton) e.getSource();
                 button.setOpaque(true);
+                button.setBorderPainted(false);
+                button.setFocusPainted(false);
 
                 // Kontrollera svaret och ändra färg
                 boolean isCorrect = button.getText().equalsIgnoreCase(question.getCorrectAnswer());
@@ -214,6 +327,9 @@ public class Client {
                 Timer timer = new Timer(700, evt -> {
                     try {
                         out.writeObject(new Pack(States.GUESS, button.getText()));
+                        button.setOpaque(false);
+                        button.setBorderPainted(true);
+                        button.setFocusPainted(true);
                     } catch (IOException ex) {
                         throw new RuntimeException(ex);
                     }
@@ -233,10 +349,30 @@ public class Client {
     public void getScoreFrame(Scoreboard score) throws InterruptedException {
         panel.removeAll();
         panel2.removeAll();
-        panel2.add(new JLabel("Scoreboard"));
+//        panel2.add(new JLabel("Scoreboard"));
 
-        switch (score.getMe().size()) {
-            case 3:
+//        JPanel playerInfoPanel = new JPanel(new GridLayout(2,3));
+//        panel2.add(playerInfoPanel);
+
+        panel.setLayout(null);
+
+        JLabel clientName = new JLabel(board.getMe().getName());
+        JLabel clientAvatar = new JLabel(board.getMe().getAvatar());
+        JLabel opponentName = new JLabel(board.getOpponent().getName());
+        JLabel opponentAvatar = new JLabel(board.getOpponent().getAvatar());
+
+        clientName.setBounds(20,160,120,30);
+        clientAvatar.setBounds(20,30,120,120);
+        opponentName.setBounds(360,160,120,30);
+        opponentAvatar.setBounds(360,30,120,120);
+
+        panel.add(clientName);
+        panel.add(opponentName);
+        panel.add(clientAvatar);
+        panel.add(opponentAvatar);
+
+        switch (score.getRound()) {
+            case 0:
                 int myScore = 0;
                 int opponentScore = 0;
                 for (int i : score.getMe()) {
@@ -246,9 +382,10 @@ public class Client {
                     opponentScore += j;
                 }
                 round1 = new JLabel("Round 1: " + myScore + " - " + opponentScore);
+                round1.setBounds(190,250,120,30);
                 panel.add(round1);
                 break;
-            case 6:
+            case 1:
                 myScore = 0;
                 opponentScore = 0;
                 for (int i : score.getMe()) {
@@ -258,10 +395,11 @@ public class Client {
                     opponentScore += j;
                 }
                 round2 = new JLabel("Round 2: " + myScore + " - " + opponentScore);
+                round2.setBounds(190,290,120,30);
                 panel.add(round1);
                 panel.add(round2);
                 break;
-            case 9:
+            case 2:
                 myScore = 0;
                 opponentScore = 0;
                 for (int i : score.getMe()) {
@@ -271,11 +409,12 @@ public class Client {
                     opponentScore += j;
                 }
                 round3 = new JLabel("Round 3: " + myScore + " - " + opponentScore);
+                round3.setBounds(190,330,120,30);
                 panel.add(round1);
                 panel.add(round2);
                 panel.add(round3);
                 break;
-            case 12:
+            case 3:
                 myScore = 0;
                 opponentScore = 0;
                 for (int i : score.getMe()) {
@@ -285,12 +424,13 @@ public class Client {
                     opponentScore += j;
                 }
                 round4 = new JLabel("Round 4: " + myScore + " - " + opponentScore);
+                round4.setBounds(190,370,120,30);
                 panel.add(round1);
                 panel.add(round2);
                 panel.add(round3);
                 panel.add(round4);
                 break;
-            case 15:
+            case 4:
                 myScore = 0;
                 opponentScore = 0;
                 for (int i : score.getMe()) {
@@ -300,13 +440,14 @@ public class Client {
                     opponentScore += j;
                 }
                 round5 = new JLabel("Round 5: " + myScore + " - " + opponentScore);
+                round5.setBounds(190,410,120,30);
                 panel.add(round1);
                 panel.add(round2);
                 panel.add(round3);
                 panel.add(round4);
                 panel.add(round5);
                 break;
-            case 18:
+            case 5:
                 myScore = 0;
                 opponentScore = 0;
                 for (int i : score.getMe()) {
@@ -316,6 +457,7 @@ public class Client {
                     opponentScore += j;
                 }
                 round6 = new JLabel("Round 6: " + myScore + " - " + opponentScore);
+                round6.setBounds(190,450,120,30);
                 panel.add(round1);
                 panel.add(round2);
                 panel.add(round3);
@@ -344,15 +486,29 @@ public class Client {
         panel.removeAll();
         panel2.removeAll();
 
-        panel2.add(new JLabel("Choose Subject"));
-        panel2.add(questionText, BorderLayout.NORTH);
+        panel.setLayout(null);
+
+//        panel2.add(new JLabel("Choose Subject"));
+//        panel2.add(questionText, BorderLayout.NORTH);
+        JLabel cat = new JLabel(new ImageIcon("src/images/other/cat.png"));
+        cat.setBounds(100,30,300,266);
+        panel.add(cat);
+        JLabel label = new JLabel("Choose Subject");
+        label.setBounds(200,320,100,30);
+        panel.add(label);
+
+        JPanel buttonContainer = new JPanel();
+        buttonContainer.setLayout(new GridLayout(3,1,2,2));
+        buttonContainer.setBounds(50,350,400,400);
+        panel.add(buttonContainer);
 
         int counter = 0;
         for (ESubject subject : subjects) {
             JButton b = buttons.get(counter);
             b.setText(subject.getNameText());
+//            b.setSize(300,200);
 
-            panel.add(b);
+            buttonContainer.add(b);
 
             b.addActionListener(e -> {
                 JButton button = (JButton) e.getSource();

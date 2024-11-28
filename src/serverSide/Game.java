@@ -54,38 +54,45 @@ public class Game extends Thread {
                 case SETUP:
                     //Retrieve p1 user and send player dto to p2
                     currentPlayer.sendToClient(new Pack(States.SEND_USER, null));
-                    User user = (User) ((Pack) currentPlayer.receiveFromClient()).object();
-                    currentPlayer.setUser(user);
+                    User user1 = (User) ((Pack) currentPlayer.receiveFromClient()).object();
+                    currentPlayer.setUser(user1);
 
-                    currentPlayer.getOpponent().sendToClient(new Pack(States.PLAYER_DTO, new PlayerDTO(user.getUsername(), user.getAvatarPath())));
+//                    currentPlayer.getOpponent().sendToClient(new Pack(States.PLAYER_DTO, new PlayerDTO(user.getUsername(), user.getAvatarPath())));
                     //Retrieve p2 user and send player dto to p1
                     currentPlayer.getOpponent().sendToClient(new Pack(States.SEND_USER, null));
-                    user = (User) ((Pack) currentPlayer.getOpponent().receiveFromClient()).object();
-                    currentPlayer.getOpponent().setUser(user);
+                    User user2 = (User) ((Pack) currentPlayer.getOpponent().receiveFromClient()).object();
+                    currentPlayer.getOpponent().setUser(user2);
 
-                    currentPlayer.sendToClient(new Pack(States.PLAYER_DTO, new PlayerDTO(user.getUsername(), user.getAvatarPath())));
+                    currentPlayer.sendToClient(new Pack(States.PLAYER_DTO, new PlayerDTO(user2.getUsername(), user2.getAvatarPath())));
+                    currentPlayer.getOpponent().sendToClient(new Pack(States.PLAYER_DTO, new PlayerDTO(user1.getUsername(), user1.getAvatarPath())));
 
                     status = FIRST_STEP;
                     break;
                 case FIRST_STEP:
-                    for (int i = 0; i < 6; i++) {
+                    String roundsProperty = Utility.properties.getProperty("rounds");
+                    int rounds = Integer.parseInt(roundsProperty);
+
+                    for (int i = 0; i < rounds; i++) {
                         currentPlayer.getOpponent().sendToClient(new Pack(States.WAIT, "Wait for player"));
                         currentPlayer.sendToClient(new Pack(States.CHOOSE_CATEGORY, generateCategory()));
                         ESubject subject = (ESubject) (((Pack) currentPlayer.receiveFromClient()).object()); //Wait for subject
 
-                        List<Question> currentQuestions = db.threebySubject(subject); //Pick a question
+//                        List<Question> currentQuestions = db.threebySubject(subject); //Pick a question
+                        int nrOfQuestions = Integer.parseInt(Utility.properties.getProperty("questions"));
+                        List<Question> currentQuestions = db.nrOfQuestionsBySubject(subject, nrOfQuestions);
+                        //TODO WORKS GETTING DESIRED AMOUNT OF QUESTIONS BUT BREAKS IN CLIENT GUI BECAUSE USING SWITCH CASE SO ROUND 1 DOES NOT APPEAR
 
                         loopQAndA(currentQuestions);
                         currentPlayer.sendToClient(new Pack(States.WAIT, "Wait for player"));
                         currentPlayer.getOut().reset();
-                        currentPlayer.sendToClient(new Pack(States.CURRENT_SCORE, new Scoreboard(currentPlayer.getResult(), currentPlayer.getOpponent().getResult())));
+                        currentPlayer.sendToClient(new Pack(States.CURRENT_SCORE, new Scoreboard(currentPlayer.getResult(), currentPlayer.getOpponent().getResult(), i)));
                         currentPlayer = currentPlayer.getOpponent();//Switch to other participant
                         System.out.println("switched player");
                         loopQAndA(currentQuestions);
                         currentPlayer.getOut().reset();
-                        currentPlayer.sendToClient(new Pack(States.CURRENT_SCORE, new Scoreboard(currentPlayer.getResult(), currentPlayer.getOpponent().getResult())));
+                        currentPlayer.sendToClient(new Pack(States.CURRENT_SCORE, new Scoreboard(currentPlayer.getResult(), currentPlayer.getOpponent().getResult(), i)));
                         currentPlayer.getOpponent().getOut().reset();
-                        currentPlayer.getOpponent().sendToClient(new Pack(States.CURRENT_SCORE, new Scoreboard(currentPlayer.getOpponent().getResult(), currentPlayer.getResult())));
+                        currentPlayer.getOpponent().sendToClient(new Pack(States.CURRENT_SCORE, new Scoreboard(currentPlayer.getOpponent().getResult(), currentPlayer.getResult(), i)));
 
 
 //                        String scoreUpdate = "Current scores: " +
@@ -109,15 +116,15 @@ public class Game extends Thread {
                     String winnerMessage;
                     String loserMessage;
                     if (p1Points > p2Points) {
-                        winnerMessage = "YOU WIN! You win with " + p1Points + " points!";
-                        loserMessage = "YOU LOSE! You lose " + p2Points + " points!";
+                        winnerMessage = "YOU WIN! Total points: " + p1Points;
+                        loserMessage = "YOU LOSE! Total points: " + p2Points;
                         p1.getOut().reset();
                         p1.sendToClient(new Pack(States.DETERMINE_WINNER, winnerMessage));
                         p2.getOut().reset();
                         p2.sendToClient(new Pack(States.DETERMINE_WINNER, loserMessage));
                     } else if (p2Points > p1Points) {
-                        winnerMessage = "YOU WIN! You win with " + p2Points + " points!";
-                        loserMessage = "YOU LOSE! You lose " + p1Points + " points!";
+                        winnerMessage = "YOU WIN! Total points: " + p2Points;
+                        loserMessage = "YOU LOSE! Total points: " + p1Points;
                         p1.getOut().reset();
                         p1.sendToClient(new Pack(States.DETERMINE_WINNER, loserMessage));
                         p2.getOut().reset();
@@ -149,9 +156,9 @@ public class Game extends Thread {
 
     public void loopQAndA(List <Question> questions) throws IOException, ClassNotFoundException {
         for (Question q : questions) {
-            System.out.println("Inside q loop");
+//            System.out.println("Inside q loop");
             currentPlayer.sendToClient(new Pack(States.SEND_ANSWER, q)); //Ask for answer from p1
-            System.out.println("Send question");
+//            System.out.println("Send question");
             String answer = (String) ((Pack) currentPlayer.receiveFromClient()).object();
             if (isCorrectAnswer(q, answer)) {
                 currentPlayer.incrementPoint();

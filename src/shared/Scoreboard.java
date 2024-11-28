@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 
 public class Scoreboard implements Serializable {
+    private int round;
     private List<Integer> me;
 
     @Override
@@ -32,7 +33,12 @@ public class Scoreboard implements Serializable {
         this.opponent = opponent;
     }
 
-    public Scoreboard(List<Integer> me, List<Integer> opponent) {
+    public int getRound() {
+        return round;
+    }
+
+    public Scoreboard(List<Integer> me, List<Integer> opponent, int round) {
+        this.round = round;
         this.me = me;
         this.opponent = opponent;
     }
