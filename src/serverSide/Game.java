@@ -77,7 +77,10 @@ public class Game extends Thread {
                         currentPlayer.sendToClient(new Pack(States.CHOOSE_CATEGORY, generateCategory()));
                         ESubject subject = (ESubject) (((Pack) currentPlayer.receiveFromClient()).object()); //Wait for subject
 
-                        List<Question> currentQuestions = db.threebySubject(subject); //Pick a question
+//                        List<Question> currentQuestions = db.threebySubject(subject); //Pick a question
+                        int nrOfQuestions = Integer.parseInt(Utility.properties.getProperty("questions"));
+                        List<Question> currentQuestions = db.nrOfQuestionsBySubject(subject, nrOfQuestions);
+                        //TODO WORKS GETTING DESIRED AMOUNT OF QUESTIONS BUT BREAKS IN CLIENT GUI BECAUSE USING SWITCH CASE SO ROUND 1 DOES NOT APPEAR
 
                         loopQAndA(currentQuestions);
                         currentPlayer.sendToClient(new Pack(States.WAIT, "Wait for player"));
