@@ -110,15 +110,15 @@ public class Game extends Thread {
                     String winnerMessage;
                     String loserMessage;
                     if (p1Points > p2Points) {
-                        winnerMessage = "YOU WIN! You win with " + p1Points + " points!";
-                        loserMessage = "YOU LOSE! You lose " + p2Points + " points!";
+                        winnerMessage = "YOU WIN! Total points: " + p1Points;
+                        loserMessage = "YOU LOSE! Total points: " + p2Points;
                         p1.getOut().reset();
                         p1.sendToClient(new Pack(States.DETERMINE_WINNER, winnerMessage));
                         p2.getOut().reset();
                         p2.sendToClient(new Pack(States.DETERMINE_WINNER, loserMessage));
                     } else if (p2Points > p1Points) {
-                        winnerMessage = "YOU WIN! You win with " + p2Points + " points!";
-                        loserMessage = "YOU LOSE! You lose " + p1Points + " points!";
+                        winnerMessage = "YOU WIN! Total points: " + p2Points;
+                        loserMessage = "YOU LOSE! Total points: " + p1Points;
                         p1.getOut().reset();
                         p1.sendToClient(new Pack(States.DETERMINE_WINNER, loserMessage));
                         p2.getOut().reset();
@@ -150,9 +150,9 @@ public class Game extends Thread {
 
     public void loopQAndA(List <Question> questions) throws IOException, ClassNotFoundException {
         for (Question q : questions) {
-            System.out.println("Inside q loop");
+//            System.out.println("Inside q loop");
             currentPlayer.sendToClient(new Pack(States.SEND_ANSWER, q)); //Ask for answer from p1
-            System.out.println("Send question");
+//            System.out.println("Send question");
             String answer = (String) ((Pack) currentPlayer.receiveFromClient()).object();
             if (isCorrectAnswer(q, answer)) {
                 currentPlayer.incrementPoint();
