@@ -69,7 +69,10 @@ public class Game extends Thread {
                     status = FIRST_STEP;
                     break;
                 case FIRST_STEP:
-                    for (int i = 0; i < 6; i++) {
+                    String roundsProperty = Utility.properties.getProperty("rounds");
+                    int rounds = Integer.parseInt(roundsProperty);
+
+                    for (int i = 0; i < rounds; i++) {
                         currentPlayer.getOpponent().sendToClient(new Pack(States.WAIT, "Wait for player"));
                         currentPlayer.sendToClient(new Pack(States.CHOOSE_CATEGORY, generateCategory()));
                         ESubject subject = (ESubject) (((Pack) currentPlayer.receiveFromClient()).object()); //Wait for subject
