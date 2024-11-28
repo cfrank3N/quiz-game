@@ -85,14 +85,14 @@ public class Game extends Thread {
                         loopQAndA(currentQuestions);
                         currentPlayer.sendToClient(new Pack(States.WAIT, "Wait for player"));
                         currentPlayer.getOut().reset();
-                        currentPlayer.sendToClient(new Pack(States.CURRENT_SCORE, new Scoreboard(currentPlayer.getResult(), currentPlayer.getOpponent().getResult())));
+                        currentPlayer.sendToClient(new Pack(States.CURRENT_SCORE, new Scoreboard(currentPlayer.getResult(), currentPlayer.getOpponent().getResult(), i)));
                         currentPlayer = currentPlayer.getOpponent();//Switch to other participant
                         System.out.println("switched player");
                         loopQAndA(currentQuestions);
                         currentPlayer.getOut().reset();
-                        currentPlayer.sendToClient(new Pack(States.CURRENT_SCORE, new Scoreboard(currentPlayer.getResult(), currentPlayer.getOpponent().getResult())));
+                        currentPlayer.sendToClient(new Pack(States.CURRENT_SCORE, new Scoreboard(currentPlayer.getResult(), currentPlayer.getOpponent().getResult(), i)));
                         currentPlayer.getOpponent().getOut().reset();
-                        currentPlayer.getOpponent().sendToClient(new Pack(States.CURRENT_SCORE, new Scoreboard(currentPlayer.getOpponent().getResult(), currentPlayer.getResult())));
+                        currentPlayer.getOpponent().sendToClient(new Pack(States.CURRENT_SCORE, new Scoreboard(currentPlayer.getOpponent().getResult(), currentPlayer.getResult(), i)));
 
 
 //                        String scoreUpdate = "Current scores: " +

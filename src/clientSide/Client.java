@@ -371,8 +371,8 @@ public class Client {
         panel.add(clientAvatar);
         panel.add(opponentAvatar);
 
-        switch (score.getMe().size()) {
-            case 3:
+        switch (score.getRound()) {
+            case 0:
                 int myScore = 0;
                 int opponentScore = 0;
                 for (int i : score.getMe()) {
@@ -385,7 +385,7 @@ public class Client {
                 round1.setBounds(190,250,120,30);
                 panel.add(round1);
                 break;
-            case 6:
+            case 1:
                 myScore = 0;
                 opponentScore = 0;
                 for (int i : score.getMe()) {
@@ -399,7 +399,7 @@ public class Client {
                 panel.add(round1);
                 panel.add(round2);
                 break;
-            case 9:
+            case 2:
                 myScore = 0;
                 opponentScore = 0;
                 for (int i : score.getMe()) {
@@ -414,7 +414,7 @@ public class Client {
                 panel.add(round2);
                 panel.add(round3);
                 break;
-            case 12:
+            case 3:
                 myScore = 0;
                 opponentScore = 0;
                 for (int i : score.getMe()) {
@@ -430,7 +430,7 @@ public class Client {
                 panel.add(round3);
                 panel.add(round4);
                 break;
-            case 15:
+            case 4:
                 myScore = 0;
                 opponentScore = 0;
                 for (int i : score.getMe()) {
@@ -447,7 +447,7 @@ public class Client {
                 panel.add(round4);
                 panel.add(round5);
                 break;
-            case 18:
+            case 5:
                 myScore = 0;
                 opponentScore = 0;
                 for (int i : score.getMe()) {
